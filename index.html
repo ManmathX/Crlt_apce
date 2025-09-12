@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Satellite Research Hackathon</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">🛰️</span>
+                <span>Team Mama</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">Mission</a></li>
+                <li><a href="#research">Research</a></li>
+                <li><a href="#satellites">Satellites</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Space Satellite Research Hackathon</h1>
+            <p class="hero-subtitle">Exploring the cosmos through innovative satellite technology</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Join Mission</button>
+                <button class="btn btn-secondary">Explore Data</button>
+            </div>
+        </div>
+        <div class="satellite-orbit">
+            <div class="satellite"></div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section id="about" class="mission">
+        <div class="container">
+            <h2 class="section-title">Our Mission</h2>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <div class="card-icon">🌍</div>
+                    <h3>Earth Observation</h3>
+                    <p>Monitor climate change, natural disasters, and environmental patterns using advanced satellite imagery and data analysis.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="card-icon">📡</div>
+                    <h3>Communication Networks</h3>
+                    <p>Develop next-generation satellite communication systems for global connectivity and emergency response.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="card-icon">🚀</div>
+                    <h3>Space Exploration</h3>
+                    <p>Push the boundaries of space technology to enable deep space missions and interplanetary communication.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Section -->
+    <section id="research" class="research">
+        <div class="container">
+            <h2 class="section-title">Current Research Areas</h2>
+            <div class="research-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h3>AI-Powered Satellite Analytics</h3>
+                        <p>Machine learning algorithms for real-time satellite data processing and pattern recognition.</p>
+                        <span class="timeline-date">2024</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h3>Quantum Satellite Communication</h3>
+                        <p>Developing quantum encryption protocols for ultra-secure satellite communications.</p>
+                        <span class="timeline-date">2024</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h3>Autonomous Satellite Swarms</h3>
+                        <p>Coordinated satellite constellations for enhanced Earth monitoring and space exploration.</p>
+                        <span class="timeline-date">2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Satellites Section -->
+    <section id="satellites" class="satellites">
+        <div class="container">
+            <h2 class="section-title">Active Satellites</h2>
+            <div class="satellite-tracker">
+                <div class="earth-container">
+                    <div class="earth"></div>
+                    <div class="satellite-orbit-1">
+                        <div class="satellite-dot" data-name="ISS"></div>
+                    </div>
+                    <div class="satellite-orbit-2">
+                        <div class="satellite-dot" data-name="Hubble"></div>
+                    </div>
+                    <div class="satellite-orbit-3">
+                        <div class="satellite-dot" data-name="GPS-III"></div>
+                    </div>
+                </div>
+                <div class="satellite-info">
+                    <div class="info-card active" data-satellite="ISS">
+                        <h3>International Space Station</h3>
+                        <p>Altitude: 408 km</p>
+                        <p>Speed: 27,600 km/h</p>
+                        <p>Mission: Research & Development</p>
+                    </div>
+                    <div class="info-card" data-satellite="Hubble">
+                        <h3>Hubble Space Telescope</h3>
+                        <p>Altitude: 547 km</p>
+                        <p>Speed: 27,300 km/h</p>
+                        <p>Mission: Deep Space Observation</p>
+                    </div>
+                    <div class="info-card" data-satellite="GPS-III">
+                        <h3>GPS III Satellite</h3>
+                        <p>Altitude: 20,200 km</p>
+                        <p>Speed: 14,000 km/h</p>
+                        <p>Mission: Global Navigation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Join the Mission</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Ready to explore space?</h3>
+                    <p>Join our hackathon and contribute to the future of satellite technology. Whether you're a developer, researcher, or space enthusiast, there's a place for you in our mission.</p>
+                    <div class="contact-details">
+                        <div class="detail-item">
+                            <span class="icon">📧</span>
+                            <span>hackathon@satelliteresearch.space</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="icon">📍</span>
+                            <span>Space Research Center, Earth</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="icon">🌐</span>
+                            <span>www.satellitehackathon.space</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="hackathon-form">
+                        <input type="text" placeholder="Your Name" required>
+                        <input type="email" placeholder="Your Email" required>
+                        <select required>
+                            <option value="">Select Your Expertise</option>
+                            <option value="developer">Software Developer</option>
+                            <option value="researcher">Space Researcher</option>
+                            <option value="engineer">Aerospace Engineer</option>
+                            <option value="data-scientist">Data Scientist</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <textarea placeholder="Tell us about your interest in satellite research" rows="4"></textarea>
+                        <button type="submit" class="btn btn-primary">Launch Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Space Satellite Research Hackathon. Reaching for the stars.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

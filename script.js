@@ -19,6 +19,24 @@ class DigitalTwinODIN {
         if (runBtn) runBtn.addEventListener('click', () => this.runSimulation());
         // Light auto-render on load
         setTimeout(() => this.renderViz(), 150);
+
+        // Bind Physics Toolkit calculators if present
+        const vvBtn = document.getElementById('calc-visviva');
+        if (vvBtn) vvBtn.addEventListener('click', () => this.calcVisViva());
+        const hmBtn = document.getElementById('calc-hohmann');
+        if (hmBtn) hmBtn.addEventListener('click', () => this.calcHohmann());
+        const rkBtn = document.getElementById('calc-rocket');
+        if (rkBtn) rkBtn.addEventListener('click', () => this.calcRocket());
+        const kpBtn = document.getElementById('calc-kepler');
+        if (kpBtn) kpBtn.addEventListener('click', () => this.calcKepler());
+        const fpaBtn = document.getElementById('calc-fpa');
+        if (fpaBtn) fpaBtn.addEventListener('click', () => this.calcFPA());
+        const paBtn = document.getElementById('calc-periap');
+        if (paBtn) paBtn.addEventListener('click', () => this.calcPeriAp());
+        const doseBasicBtn = document.getElementById('calc-dose-basic');
+        if (doseBasicBtn) doseBasicBtn.addEventListener('click', () => this.calcDoseBasic());
+        const doseSPBtn = document.getElementById('calc-dose-sp');
+        if (doseSPBtn) doseSPBtn.addEventListener('click', () => this.calcDoseSP());
     }
 
     getParams() {
@@ -119,6 +137,118 @@ class DigitalTwinODIN {
         el.prepend(block);
         // keep recent logs
         while (el.children.length > 6) el.removeChild(el.lastChild);
+    }
+
+    // Physics Toolkit Calculators
+    calcVisViva() {
+        const mu = parseFloat(document.getElementById('vv-mu')?.value || '398600'); // km^3/s^2
+        const r = parseFloat(document.getElementById('vv-r')?.value || '6771'); // km
+        const a = parseFloat(document.getElementById('vv-a')?.value || r); // km
+        const outEl = document.getElementById('vv-out');
+        if (!outEl || !isFinite(mu) || !isFinite(r) || !isFinite(a) || r <= 0 || a <= 0) return;
+        const v_kms = Math.sqrt(Math.max(0, mu * (2/r - 1/a))); // km/s
+        const v_ms = v_kms * 1000.0;
+        outEl.textContent = `v = ${v_ms.toFixed(2)} m/s (${v_kms.toFixed(4)} km/s)`;
+    }
+
+    calcHohmann() {
+        const mu = parseFloat(document.getElementById('hm-mu')?.value || '398600'); // km^3/s^2
+        const r1 = parseFloat(document.getElementById('hm-r1')?.value || '6678'); // km
+        const r2 = parseFloat(document.getElementById('hm-r2')?.value || '42164'); // km
+        const outEl = document.getElementById('hm-out');
+        if (!outEl || !isFinite(mu) || !isFinite(r1) || !isFinite(r2) || r1 <= 0 || r2 <= 0) return;
+        const sqrt = Math.sqrt;
+        const dv1_kms = sqrt(mu/r1) * (sqrt((2*r2)/(r1+r2)) - 1);
+        const dv2_kms = sqrt(mu/r2) * (1 - sqrt((2*r1)/(r1+r2)));
+        const total_kms = Math.abs(dv1_kms) + Math.abs(dv2_kms);
+        const dv1_ms = dv1_kms * 1000.0;
+        const dv2_ms = dv2_kms * 1000.0;
+        const total_ms = total_kms * 1000.0;
+        outEl.textContent = `Δv1 = ${dv1_ms.toFixed(2)} m/s, Δv2 = ${dv2_ms.toFixed(2)} m/s, Total = ${total_ms.toFixed(2)} m/s`;
+    }
+
+    calcRocket() {
+        const ve = parseFloat(document.getElementById('rk-ve')?.value || '3000'); // m/s
+        const mi = parseFloat(document.getElementById('rk-mi')?.value || '1000'); // kg
+        const mf = parseFloat(document.getElementById('rk-mf')?.value || '800'); // kg
+        const outEl = document.getElementById('rk-out');
+        if (!outEl || !isFinite(ve) || !isFinite(mi) || !isFinite(mf) || mi <= 0 || mf <= 0 || mi <= mf) {
+            if (outEl) outEl.textContent = 'Δv = — m/s';
+            return;
+        }
+        const dv = ve * Math.log(mi/mf);
+        outEl.textContent = `Δv = ${dv.toFixed(2)} m/s`;
+    }
+
+    calcKepler() {
+        const mu = parseFloat(document.getElementById('kp-mu')?.value || '398600'); // km^3/s^2
+        const a = parseFloat(document.getElementById('kp-a')?.value || '10000'); // km
+        const outEl = document.getElementById('kp-out');
+        if (!outEl || !isFinite(mu) || !isFinite(a) || a <= 0) return;
+        const T = 2 * Math.PI * Math.sqrt(Math.pow(a,3) / mu); // seconds
+        const minutes = T / 60.0;
+        outEl.textContent = `T = ${T.toFixed(1)} s (${minutes.toFixed(2)} min)`;
+    }
+
+    calcFPA() {
+        const vr = parseFloat(document.getElementById('fp-vr')?.value || '0');
+        const vt = parseFloat(document.getElementById('fp-vt')?.value || '1');
+        const outEl = document.getElementById('fp-out');
+        if (!outEl || !isFinite(vr) || !isFinite(vt) || vt === 0) return;
+        const gammaRad = Math.atan(vr / vt);
+        const gammaDeg = gammaRad * (180/Math.PI);
+        outEl.textContent = `γ = ${gammaDeg.toFixed(3)} deg`;
+    }
+
+    calcPeriAp() {
+        const a = parseFloat(document.getElementById('pa-a')?.value || '10000'); // km
+        const e = parseFloat(document.getElementById('pa-e')?.value || '0');
+        const outEl = document.getElementById('pa-out');
+        if (!outEl || !isFinite(a) || !isFinite(e) || a <= 0 || e < 0 || e >= 1) {
+            if (outEl) outEl.textContent = 'r_p = — km, r_a = — km';
+            return;
+        }
+        const rp = a * (1 - e);
+        const ra = a * (1 + e);
+        outEl.textContent = `r_p = ${rp.toFixed(2)} km, r_a = ${ra.toFixed(2)} km`;
+    }
+
+    // Radiation Dose Toolkit
+    calcDoseBasic() {
+        const E_MeV = parseFloat(document.getElementById('rd-E-MeV')?.value || '0');
+        const flux = parseFloat(document.getElementById('rd-flux')?.value || '0'); // 1/cm^2/s
+        const area = parseFloat(document.getElementById('rd-area')?.value || '0'); // cm^2
+        const time = parseFloat(document.getElementById('rd-time')?.value || '0'); // s
+        const mass = parseFloat(document.getElementById('rd-mass')?.value || '1'); // kg
+        const wR = parseFloat(document.getElementById('rd-wr')?.value || '1');
+        const outEl = document.getElementById('dose-basic-out');
+        if (!outEl) return;
+        if ([E_MeV, flux, area, time, mass, wR].some(x => !isFinite(x) || x < 0) || mass === 0) {
+            outEl.textContent = 'E = — J/particle, N = —, D = — Gy, H = — Sv';
+            return;
+        }
+        const E_J = E_MeV * 1.602e-13; // J per particle
+        const N = flux * area * time; // count
+        const E_tot = N * E_J; // J
+        const D = E_tot / mass; // Gy = J/kg
+        const H = D * wR; // Sv
+        outEl.textContent = `E = ${E_J.toExponential(3)} J/particle, N = ${N.toExponential(3)}, D = ${D.toExponential(3)} Gy, H = ${H.toExponential(3)} Sv`;
+    }
+
+    calcDoseSP() {
+        const phi = parseFloat(document.getElementById('sp-phi')?.value || '0'); // 1/cm^2
+        const S = parseFloat(document.getElementById('sp-S')?.value || '0'); // MeV*cm^2/g
+        const wR = parseFloat(document.getElementById('sp-wr')?.value || '1');
+        const outEl = document.getElementById('dose-sp-out');
+        if (!outEl) return;
+        if ([phi, S, wR].some(x => !isFinite(x) || x < 0)) {
+            outEl.textContent = 'D = — Gy, H = — Sv';
+            return;
+        }
+        // D(Gy) = phi * S * 1.602e-10
+        const D = phi * S * 1.602e-10; // Gy
+        const H = D * wR; // Sv
+        outEl.textContent = `D = ${D.toExponential(3)} Gy, H = ${H.toExponential(3)} Sv`;
     }
 }
 
@@ -841,6 +971,187 @@ class SatelliteLab {
     addLabStyles() {
         const style = document.createElement('style');
         style.textContent = `
+            /* ODIN Formula Panel Enhanced Styling */
+            .odin-formula-panel {
+                background: linear-gradient(135deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.9));
+                border: 2px solid #00d4ff;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+                margin: 2rem 0;
+            }
+            
+            .odin-main-title {
+                font-size: 1.8rem;
+                color: #00d4ff;
+                text-align: center;
+                margin-bottom: 0.5rem;
+                text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            }
+            
+            .odin-subtitle {
+                text-align: center;
+                color: #9ad2ff;
+                font-style: italic;
+                margin-bottom: 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .formula-heading {
+                color: #4ecdc4;
+                font-size: 1.3rem;
+                margin: 1.5rem 0 1rem 0;
+                padding: 0.5rem;
+                background: rgba(78, 205, 196, 0.1);
+                border-left: 4px solid #4ecdc4;
+                border-radius: 5px;
+            }
+            
+            .formula-box {
+                background: rgba(0, 212, 255, 0.05);
+                border: 1px solid rgba(0, 212, 255, 0.2);
+                border-radius: 10px;
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .formula-title {
+                font-weight: bold;
+                color: #feca57;
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .formula {
+                background: rgba(254, 202, 87, 0.1);
+                color: #feca57;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-family: 'Courier New', monospace;
+                font-weight: bold;
+                border: 1px solid rgba(254, 202, 87, 0.3);
+            }
+            
+            .formula-description {
+                color: #9ad2ff;
+                font-style: italic;
+                margin: 0.5rem 0;
+                line-height: 1.6;
+            }
+            
+            .formula-note {
+                color: #4ecdc4;
+                font-style: italic;
+                margin: 0.5rem 0;
+                padding: 0.5rem;
+                background: rgba(78, 205, 196, 0.1);
+                border-radius: 5px;
+            }
+            
+            .toolkit-section {
+                margin: 2rem 0;
+                padding: 1rem;
+                border-radius: 15px;
+                transition: all 0.3s ease;
+            }
+            
+            .orbital-elements {
+                background: linear-gradient(135deg, rgba(72, 219, 251, 0.1), rgba(72, 219, 251, 0.05));
+                border-left: 5px solid #48dbfb;
+            }
+            
+            .hazard-section {
+                background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05));
+                border-left: 5px solid #ff6b6b;
+            }
+            
+            .trajectory-section {
+                background: linear-gradient(135deg, rgba(95, 39, 205, 0.1), rgba(95, 39, 205, 0.05));
+                border-left: 5px solid #5f27cd;
+            }
+            
+            .transfer-section {
+                background: linear-gradient(135deg, rgba(254, 202, 87, 0.1), rgba(254, 202, 87, 0.05));
+                border-left: 5px solid #feca57;
+            }
+            
+            .energy-section {
+                background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(78, 205, 196, 0.05));
+                border-left: 5px solid #4ecdc4;
+            }
+            
+            .timing-section {
+                background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+                border-left: 5px solid #00d4ff;
+            }
+            
+            .geometry-section {
+                background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05));
+                border-left: 5px solid #ff6b6b;
+            }
+            
+            .radiation-section {
+                background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+                border-left: 5px solid #ffc107;
+            }
+            
+            .toolkit-section:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+            }
+            
+            .mini-calc {
+                background: rgba(0, 20, 40, 0.8);
+                border: 1px solid #00d4ff;
+                border-radius: 10px;
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .calc-row {
+                display: flex;
+                gap: 0.5rem;
+                margin: 0.5rem 0;
+                flex-wrap: wrap;
+            }
+            
+            .calc-row input {
+                flex: 1;
+                min-width: 120px;
+                padding: 0.5rem;
+                background: rgba(0, 212, 255, 0.1);
+                border: 1px solid #00d4ff;
+                border-radius: 5px;
+                color: white;
+                font-family: 'Orbitron', monospace;
+            }
+            
+            .calc-row input::placeholder {
+                color: #9ad2ff;
+            }
+            
+            .calc-out {
+                background: rgba(78, 205, 196, 0.1);
+                border: 1px solid #4ecdc4;
+                border-radius: 5px;
+                padding: 0.5rem;
+                margin: 0.5rem 0;
+                color: #4ecdc4;
+                font-family: 'Courier New', monospace;
+                font-weight: bold;
+            }
+            
+            .odin-list li {
+                margin: 0.5rem 0;
+                padding: 0.3rem 0;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            }
+            
+            .odin-list li:last-child {
+                border-bottom: none;
+            }
+            
             .satellite-lab {
                 padding: 5rem 0;
                 background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);

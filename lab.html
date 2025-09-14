@@ -193,6 +193,176 @@
                                 <li>Cloud/edge compute for real-time processing</li>
                             </ul>
                         </div>
+                        <div class="odin-panel odin-formula-panel">
+                            <h4 class="odin-main-title">🧠 ODIN Physics Formula Toolkit (Hackathon Edition)</h4>
+                            <p class="odin-subtitle">Complete orbital mechanics and radiation dose calculations for mission planning</p>
+                            <div class="odin-toolkit">
+                                <div class="toolkit-section orbital-elements">
+                                    <h5 class="formula-heading">📐 Six Orbital Elements</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Complete Orbital State Definition</div>
+                                    <ul class="odin-list">
+                                        <li><strong>Semi-major axis (a)</strong> — orbit size</li>
+                                        <li><strong>Eccentricity (e)</strong> — orbit shape</li>
+                                        <li><strong>Inclination (i)</strong> — tilt of orbit plane</li>
+                                        <li><strong>Longitude of ascending node (Ω)</strong> — RAAN orientation</li>
+                                        <li><strong>Argument of periapsis (ω)</strong> — periapsis orientation in plane</li>
+                                        <li><strong>True anomaly (ν)</strong> — current position along orbit</li>
+                                    </ul>
+                                    <p class="odin-note">Together, these uniquely define the orbit's size, shape, orientation, and spacecraft position.</p>
+                                </div>
+                                <div class="toolkit-section hazard-section">
+                                    <h5 class="formula-heading">⚠️ Hazard Response & Replanning</h5>
+                                    <div class="formula-box">
+                                        <p class="formula-description">Perturbations (drag, solar radiation pressure, 3rd-body forces) disturb the orbit. ODIN adjusts these elements when hazards appear, then propagates the state by integrating equations of motion to predict the new trajectory.</p>
+                                    </div>
+                                </div>
+                                <div class="toolkit-section trajectory-section">
+                                    <h5 class="formula-heading">🚀 1) Trajectory & Motion Formulas</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Core Physics Laws</div>
+                                    <ul class="odin-list">
+                                        <li><strong>Newton's Second Law:</strong> F = m a — Core of trajectory propagation. Compute acceleration during burns and integrate to update velocity and position.</li>
+                                        <li><strong>Gravitational Force:</strong> F = G M m / r² — Main force shaping orbits.</li>
+                                        <li><strong>Vis-Viva Equation:</strong> v = √[μ (2/r − 1/a)] — Speed at any point in orbit.</li>
+                                    </ul>
+                                    <div class="mini-calc">
+                                        <label>Vis-Viva (use km for distances, μ in km³/s²):</label>
+                                        <div class="calc-row">
+                                            <input id="vv-mu" type="number" placeholder="μ (Earth=398600)" />
+                                            <input id="vv-r" type="number" placeholder="r (km)" />
+                                            <input id="vv-a" type="number" placeholder="a (km)" />
+                                            <button id="calc-visviva" class="btn btn-secondary" type="button">Compute v</button>
+                                        </div>
+                                        <div id="vv-out" class="calc-out">v = — m/s</div>
+                                    </div>
+                                </div>
+                                <div class="toolkit-section transfer-section">
+                                    <h5 class="formula-heading">🔄 2) Orbital Transfers & Δv Costs</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Transfer & Propulsion Equations</div>
+                                    <ul class="odin-list">
+                                        <li><strong>Hohmann Transfer Δv:</strong> Δv = √(μ/r₁)[√(2r₂/(r₁+r₂)) - 1] + √(μ/r₂)[1 - √(2r₁/(r₁+r₂))] — Baseline Earth→Moon transfer costs.</li>
+                                        <li><strong>Tsiolkovsky Rocket Equation:</strong> Δv = vₑ ln(mᵢ/mf) — Links fuel usage to velocity change.</li>
+                                    </ul>
+                                    <div class="mini-calc">
+                                        <label>Hohmann (km, km³/s²):</label>
+                                        <div class="calc-row">
+                                            <input id="hm-mu" type="number" placeholder="μ (Earth=398600)" />
+                                            <input id="hm-r1" type="number" placeholder="r1 (km)" />
+                                            <input id="hm-r2" type="number" placeholder="r2 (km)" />
+                                            <button id="calc-hohmann" class="btn btn-secondary" type="button">Compute Δv</button>
+                                        </div>
+                                        <div id="hm-out" class="calc-out">Δv1 = — m/s, Δv2 = — m/s, Total = — m/s</div>
+                                    </div>
+                                    <div class="mini-calc">
+                                        <label>Rocket Equation:</label>
+                                        <div class="calc-row">
+                                            <input id="rk-ve" type="number" placeholder="vₑ (m/s)" />
+                                            <input id="rk-mi" type="number" placeholder="mᵢ (kg)" />
+                                            <input id="rk-mf" type="number" placeholder="m_f (kg)" />
+                                            <button id="calc-rocket" class="btn btn-secondary" type="button">Compute Δv</button>
+                                        </div>
+                                        <div id="rk-out" class="calc-out">Δv = — m/s</div>
+                                    </div>
+                                </div>
+                                <div class="toolkit-section energy-section">
+                                    <h5 class="formula-heading">⚡ Core Formulas (Energy, Momentum, Timing)</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Fundamental Orbital Mechanics</div>
+                                    <ul class="odin-list">
+                                        <li><strong>Orbital Energy:</strong> E = -μ/(2a); Ė = F⃗·v⃗ = r ν̇ T — defines orbit size and burn feasibility.</li>
+                                        <li><strong>Angular Momentum:</strong> h⃗ = r⃗ × v⃗; ḣ = r⃗ × F⃗ = r T ê_N − r N ê_T — defines plane orientation.</li>
+                                        <li><strong>Kepler's Laws:</strong> Equal areas (h conservation); Period T via T² ∝ a³.</li>
+                                    </ul>
+                                    </div>
+                                </div>
+                                <div class="toolkit-section timing-section">
+                                    <h5 class="formula-heading">⏰ 3) Time of Flight & Mission Duration</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Temporal Analysis</div>
+                                    <ul class="odin-list">
+                                        <li><strong>Kepler's Third Law:</strong> T = 2π√(a³/μ) — Estimate transfer time and compare to hazard windows.</li>
+                                    </ul>
+                                    <div class="mini-calc">
+                                        <label>Kepler Period (km, km³/s²):</label>
+                                        <div class="calc-row">
+                                            <input id="kp-mu" type="number" placeholder="μ (Earth=398600)" />
+                                            <input id="kp-a" type="number" placeholder="a (km)" />
+                                            <button id="calc-kepler" class="btn btn-secondary" type="button">Compute T</button>
+                                        </div>
+                                        <div id="kp-out" class="calc-out">T = — s (— min)</div>
+                                    </div>
+                                </div>
+                                <div class="toolkit-section geometry-section">
+                                    <h5 class="formula-heading">📏 4) Flight Path Angle & Perigee/Apogee</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Orbital Geometry</div>
+                                    <ul class="odin-list">
+                                        <li><strong>Flight Path Angle:</strong> <code class="formula">γ = atan(vᵣ / vθ)</code> — injection/transfer critical.</li>
+                                        <li><strong>Perigee/Apogee:</strong> <code class="formula">rₚ = a(1−e)</code>, <code class="formula">rₐ = a(1+e)</code> — drag vs. 3rd-body sensitivities.</li>
+                                    </ul>
+                                    <div class="mini-calc">
+                                        <label>Flight Path Angle:</label>
+                                        <div class="calc-row">
+                                            <input id="fp-vr" type="number" placeholder="v_r (m/s)" />
+                                            <input id="fp-vt" type="number" placeholder="v_θ (m/s)" />
+                                            <button id="calc-fpa" class="btn btn-secondary" type="button">Compute γ</button>
+                                        </div>
+                                        <div id="fp-out" class="calc-out">γ = — deg</div>
+                                    </div>
+                                    <div class="mini-calc">
+                                        <label>Perigee / Apogee (km):</label>
+                                        <div class="calc-row">
+                                            <input id="pa-a" type="number" placeholder="a (km)" />
+                                            <input id="pa-e" type="number" placeholder="e (0–1)" />
+                                            <button id="calc-periap" class="btn btn-secondary" type="button">Compute r_p, r_a</button>
+                                        </div>
+                                        <div id="pa-out" class="calc-out">r_p = — km, r_a = — km</div>
+                                    </div>
+                                </div>
+                                <div class="toolkit-section radiation-section">
+                                    <h5 class="formula-heading">☢️ 5) Radiation Dose Toolkit</h5>
+                                    <div class="formula-box">
+                                        <div class="formula-title">Radiation Physics & Dosimetry</div>
+                                        <ul class="odin-list">
+                                            <li><strong>Energy per particle:</strong> <code class="formula">E(J) = E(MeV) × 1.602×10⁻¹³</code></li>
+                                            <li><strong>Particle count:</strong> <code class="formula">N = Φ × A × t</code> where Φ = flux (particles/cm²/s)</li>
+                                            <li><strong>Total energy:</strong> <code class="formula">Eₜₒₜ = N × E(J)</code></li>
+                                            <li><strong>Absorbed dose:</strong> <code class="formula">D(Gy) = Eₜₒₜ(J) / m(kg)</code></li>
+                                            <li><strong>Stopping power method:</strong> <code class="formula">D(Gy) = Φ × S × 1.602×10⁻¹⁰</code></li>
+                                            <li><strong>Equivalent dose:</strong> <code class="formula">H(Sv) = D(Gy) × wᵣ</code></li>
+                                        </ul>
+                                        <p class="formula-description">Compute absorbed and equivalent dose during solar events or trapped belt crossings.</p>
+                                    </div>
+                                    <div class="mini-calc">
+                                        <label>Basic Method (Energy per particle → Dose)</label>
+                                        <div class="calc-row">
+                                            <input id="rd-E-MeV" type="number" step="any" placeholder="E (MeV per particle)" />
+                                            <input id="rd-flux" type="number" step="any" placeholder="Flux Φ (1/cm²/s)" />
+                                            <input id="rd-area" type="number" step="any" placeholder="Area A (cm²)" />
+                                        </div>
+                                        <div class="calc-row">
+                                            <input id="rd-time" type="number" step="any" placeholder="Time t (s)" />
+                                            <input id="rd-mass" type="number" step="any" placeholder="Mass m (kg)" />
+                                            <input id="rd-wr" type="number" step="any" placeholder="w_R (e.g., p≈2, e/γ≈1, α≈20)" />
+                                            <button id="calc-dose-basic" class="btn btn-secondary" type="button">Compute Dose</button>
+                                        </div>
+                                        <div id="dose-basic-out" class="calc-out">E = — J/particle, N = —, D = — Gy, H = — Sv</div>
+                                    </div>
+                                    <div class="mini-calc">
+                                        <label>Stopping Power Method (fluence × S)</label>
+                                        <div class="calc-row">
+                                            <input id="sp-phi" type="number" step="any" placeholder="Fluence Φ (1/cm²)" />
+                                            <input id="sp-S" type="number" step="any" placeholder="S (MeV·cm²/g)" />
+                                            <input id="sp-wr" type="number" step="any" placeholder="w_R" />
+                                            <button id="calc-dose-sp" class="btn btn-secondary" type="button">Compute Dose</button>
+                                        </div>
+                                        <div id="dose-sp-out" class="calc-out">D = — Gy, H = — Sv</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="odin-panel decision-log">
                         <h4>AI Decision Log (Human-Readable)</h4>

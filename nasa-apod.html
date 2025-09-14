@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD - Space Satellite Research Hackathon</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="floating-objects">
+        <div class="asteroid asteroid-1">🪨</div>
+        <div class="asteroid asteroid-2">☄️</div>
+        <div class="asteroid asteroid-3">🌑</div>
+        <div class="space-debris debris-1">🛸</div>
+        <div class="space-debris debris-2">🚀</div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">🛰️</span>
+                <span>Team Mama</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="satellites.html">Satellites</a></li>
+                <li><a href="lab.html">Lab</a></li>
+                <li><a href="nasa-apod.html" class="active">NASA APOD</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- NASA APOD Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">NASA Astronomy Picture of the Day</h1>
+            <p class="page-subtitle">Discover the cosmos through NASA's daily featured images</p>
+        </div>
+    </section>
+
+    <!-- NASA APOD Section -->
+    <section id="nasa-apod" class="nasa-section">
+        <div class="container">
+            <div class="apod-container">
+                <div class="apod-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading today's cosmic wonder...</p>
+                </div>
+                <div class="apod-content" style="display: none;">
+                    <div class="apod-image-container">
+                        <img id="apod-image" alt="NASA APOD" />
+                    </div>
+                    <div class="apod-info">
+                        <h3 id="apod-title"></h3>
+                        <p id="apod-date"></p>
+                        <p id="apod-explanation"></p>
+                        <div class="apod-credits">
+                            <small>Image Credit: NASA</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="apod-error" style="display: none;">
+                    <div class="error-icon">🛰️</div>
+                    <p>Unable to connect to NASA servers. Please check your connection and try again.</p>
+                    <button class="btn btn-secondary" onclick="window.nasaAPOD.fetchAPOD()">Retry</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- APOD Archive -->
+    <section class="apod-archive">
+        <div class="container">
+            <h2 class="section-title">Explore the Archive</h2>
+            <div class="archive-controls">
+                <input type="date" id="apod-date-picker" class="date-picker">
+                <button class="btn btn-primary" id="load-date">Load Image</button>
+            </div>
+            <div class="archive-grid">
+                <div class="archive-item">
+                    <div class="archive-date">Recent Highlights</div>
+                    <p>Browse through NASA's most stunning astronomical images from recent weeks.</p>
+                </div>
+                <div class="archive-item">
+                    <div class="archive-date">Featured Collections</div>
+                    <p>Curated collections of nebulae, galaxies, planets, and space missions.</p>
+                </div>
+                <div class="archive-item">
+                    <div class="archive-date">Educational Content</div>
+                    <p>Learn about astronomy and space science through detailed explanations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Space Satellite Research Hackathon. Reaching for the stars.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

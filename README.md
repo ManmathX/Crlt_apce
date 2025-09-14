@@ -227,4 +227,3 @@ This project is open source and available under the [MIT License](LICENSE).
 **Ready to launch your space hackathon? 🚀**
 
 *"The cosmos is within us. We are made of star-stuff."* - Carl Sagan
-# Crlt_apce

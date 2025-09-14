@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Satellite Research Hackathon</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+        // Redirect to home page
+        window.location.href = 'home.html';
+    </script>
 </head>
 <body>
     <div class="stars"></div>
     <div class="twinkling"></div>
+    <div class="floating-objects">
+        <div class="asteroid asteroid-1">🪨</div>
+        <div class="asteroid asteroid-2">☄️</div>
+        <div class="asteroid asteroid-3">🌑</div>
+        <div class="space-debris debris-1">🛸</div>
+        <div class="space-debris debris-2">🚀</div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
     
     <!-- Navigation -->
     <nav class="navbar">
@@ -22,7 +33,9 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">Mission</a></li>
                 <li><a href="#research">Research</a></li>
-                <li><a href="#satellites">Satellites</a></li>
+                <li><a href="#satellites/playground">Satellites</a></li>
+                <li><a href="#satellite-lab">Lab</a></li>
+                <li><a href="#nasa-apod">NASA APOD</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -48,20 +61,59 @@
         <div class="container">
             <h2 class="section-title">Our Mission</h2>
             <div class="mission-grid">
-                <div class="mission-card">
-                    <div class="card-icon">🌍</div>
-                    <h3>Earth Observation</h3>
-                    <p>Monitor climate change, natural disasters, and environmental patterns using advanced satellite imagery and data analysis.</p>
+                <div class="mission-card card-3d">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-icon">🌍</div>
+                            <h3>Earth Observation</h3>
+                            <p>Monitor climate change, natural disasters, and environmental patterns using advanced satellite imagery and data analysis.</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>Technologies</h3>
+                            <ul>
+                                <li>🛰️ Hyperspectral Imaging</li>
+                                <li>🌡️ Climate Sensors</li>
+                                <li>🔍 AI Pattern Recognition</li>
+                                <li>📊 Real-time Analytics</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="mission-card">
-                    <div class="card-icon">📡</div>
-                    <h3>Communication Networks</h3>
-                    <p>Develop next-generation satellite communication systems for global connectivity and emergency response.</p>
+                <div class="mission-card card-3d">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-icon">📡</div>
+                            <h3>Communication Networks</h3>
+                            <p>Develop next-generation satellite communication systems for global connectivity and emergency response.</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>Capabilities</h3>
+                            <ul>
+                                <li>🌐 Global Coverage</li>
+                                <li>⚡ Low Latency</li>
+                                <li>🔒 Quantum Encryption</li>
+                                <li>📱 5G Integration</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="mission-card">
-                    <div class="card-icon">🚀</div>
-                    <h3>Space Exploration</h3>
-                    <p>Push the boundaries of space technology to enable deep space missions and interplanetary communication.</p>
+                <div class="mission-card card-3d">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-icon">🚀</div>
+                            <h3>Space Exploration</h3>
+                            <p>Push the boundaries of space technology to enable deep space missions and interplanetary communication.</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>Missions</h3>
+                            <ul>
+                                <li>🪐 Mars Communication</li>
+                                <li>🌙 Lunar Gateway</li>
+                                <li>🛰️ Deep Space Network</li>
+                                <li>🔭 Interstellar Probes</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,6 +193,37 @@
         </div>
     </section>
 
+    <!-- NASA APOD Section -->
+    <section id="nasa-apod" class="nasa-section">
+        <div class="container">
+            <h2 class="section-title">NASA Astronomy Picture of the Day</h2>
+            <div class="apod-container">
+                <div class="apod-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading today's cosmic wonder...</p>
+                </div>
+                <div class="apod-content" style="display: none;">
+                    <div class="apod-image-container">
+                        <img id="apod-image" alt="NASA APOD" />
+                    </div>
+                    <div class="apod-info">
+                        <h3 id="apod-title"></h3>
+                        <p id="apod-date"></p>
+                        <p id="apod-explanation"></p>
+                        <div class="apod-credits">
+                            <small>Image Credit: NASA</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="apod-error" style="display: none;">
+                    <div class="error-icon">🛰️</div>
+                    <p>Unable to connect to NASA servers. Please check your connection and try again.</p>
+                    <button class="btn btn-secondary" onclick="window.nasaAPOD.fetchAPOD()">Retry</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
@@ -166,9 +249,9 @@
                 </div>
                 <div class="contact-form">
                     <form id="hackathon-form">
-                        <input type="text" placeholder="Your Name" required>
-                        <input type="email" placeholder="Your Email" required>
-                        <select required>
+                        <input type="text" id="name" name="name" placeholder="Your Name" aria-label="Your Name" required>
+                        <input type="email" id="email" name="email" placeholder="Your Email" aria-label="Your Email" required>
+                        <select id="expertise" name="expertise" aria-label="Your Expertise" required>
                             <option value="">Select Your Expertise</option>
                             <option value="developer">Software Developer</option>
                             <option value="researcher">Space Researcher</option>
@@ -176,7 +259,7 @@
                             <option value="data-scientist">Data Scientist</option>
                             <option value="other">Other</option>
                         </select>
-                        <textarea placeholder="Tell us about your interest in satellite research" rows="4"></textarea>
+                        <textarea id="message" name="message" placeholder="Tell us about your interest in satellite research" aria-label="Message" rows="4"></textarea>
                         <button type="submit" class="btn btn-primary">Launch Application</button>
                     </form>
                 </div>

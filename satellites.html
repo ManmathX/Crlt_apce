@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellites - Space Satellite Research Hackathon</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="floating-objects">
+        <div class="asteroid asteroid-1">🪨</div>
+        <div class="asteroid asteroid-2">☄️</div>
+        <div class="asteroid asteroid-3">🌑</div>
+        <div class="space-debris debris-1">🛸</div>
+        <div class="space-debris debris-2">🚀</div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">🛰️</span>
+                <span>Team Mama</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="satellites.html" class="active">Satellites</a></li>
+                <li><a href="lab.html">Lab</a></li>
+                <li><a href="nasa-apod.html">NASA APOD</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Satellites Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Active Satellites</h1>
+            <p class="page-subtitle">Track real-time satellite positions and mission data</p>
+        </div>
+    </section>
+
+    <!-- Satellites Section -->
+    <section class="satellites">
+        <div class="container">
+            <div class="satellite-tracker">
+                <div class="earth-container">
+                    <div class="earth"></div>
+                    <div class="satellite-orbit-1">
+                        <div class="satellite-dot" data-name="ISS"></div>
+                    </div>
+                    <div class="satellite-orbit-2">
+                        <div class="satellite-dot" data-name="Hubble"></div>
+                    </div>
+                    <div class="satellite-orbit-3">
+                        <div class="satellite-dot" data-name="GPS-III"></div>
+                    </div>
+                </div>
+                <div class="satellite-info">
+                    <div class="info-card active" data-satellite="ISS">
+                        <h3>International Space Station</h3>
+                        <p>Altitude: 408 km</p>
+                        <p>Speed: 27,600 km/h</p>
+                        <p>Mission: Research & Development</p>
+                    </div>
+                    <div class="info-card" data-satellite="Hubble">
+                        <h3>Hubble Space Telescope</h3>
+                        <p>Altitude: 547 km</p>
+                        <p>Speed: 27,300 km/h</p>
+                        <p>Mission: Deep Space Observation</p>
+                    </div>
+                    <div class="info-card" data-satellite="GPS-III">
+                        <h3>GPS III Satellite</h3>
+                        <p>Altitude: 20,200 km</p>
+                        <p>Speed: 14,000 km/h</p>
+                        <p>Mission: Global Navigation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Satellite Statistics -->
+    <section class="satellite-stats">
+        <div class="container">
+            <h2 class="section-title">Global Satellite Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">8,378</div>
+                    <div class="stat-label">Active Satellites</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">34,260</div>
+                    <div class="stat-label">Space Debris Objects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">131</div>
+                    <div class="stat-label">Countries with Satellites</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4,852</div>
+                    <div class="stat-label">Starlink Satellites</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Space Satellite Research Hackathon. Reaching for the stars.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

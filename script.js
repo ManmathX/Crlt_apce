@@ -12,6 +12,116 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Digital Twin (ODIN) Class
+class DigitalTwinODIN {
+    init() {
+        const runBtn = document.getElementById('odin-run');
+        if (runBtn) runBtn.addEventListener('click', () => this.runSimulation());
+        // Light auto-render on load
+        setTimeout(() => this.renderViz(), 150);
+    }
+
+    getParams() {
+        return {
+            hazard: document.getElementById('odin-hazard')?.value || 'none',
+            objective: document.getElementById('odin-objective')?.value || 'balanced',
+            live: !!document.getElementById('odin-live')?.checked
+        };
+    }
+
+    runSimulation() {
+        const { hazard, objective, live } = this.getParams();
+        const candidates = this.generateCandidates(hazard, objective);
+        const best = this.rankCandidates(candidates, objective);
+        this.renderViz(hazard, candidates, best);
+        this.writeDecisionLog(hazard, objective, live, candidates, best);
+    }
+
+    generateCandidates(hazard, objective) {
+        // Generate 2 alternate routes with randomized metrics; base path is implicit
+        const base = { name: 'Nominal', fuel: 100, time: 100, safety: hazard === 'none' ? 100 : 60 };
+        const altA = { name: 'Alt A', fuel: 85 + Math.random()*10, time: 110 + Math.random()*10, safety: 80 + Math.random()*10 };
+        const altB = { name: 'Alt B', fuel: 110 + Math.random()*10, time: 80 + Math.random()*10, safety: 75 + Math.random()*10 };
+        if (hazard === 'solar') { altA.safety += 10; altB.time += 10; }
+        if (hazard === 'debris') { altB.safety += 12; altA.time += 5; }
+        if (hazard === 'radiation') { altA.safety += 8; altB.fuel += 5; }
+        return [base, altA, altB];
+    }
+
+    rankCandidates(cands, objective) {
+        const score = c => {
+            const nf = 200/c.fuel, nt = 200/c.time, ns = c.safety; // normalize
+            if (objective === 'fuel') return nf*0.6 + ns*0.4;
+            if (objective === 'time') return nt*0.6 + ns*0.4;
+            if (objective === 'safety') return ns*0.8 + nf*0.1 + nt*0.1;
+            return nf*0.33 + nt*0.33 + ns*0.34; // balanced
+        };
+        let best = cands[0], bestS = -Infinity;
+        for (const c of cands) { const s = score(c); if (s > bestS) { bestS = s; best = c; } }
+        return best;
+    }
+
+    renderViz(hazard='none', candidates=[], best=null) {
+        const canvas = document.getElementById('odin-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        // Clear
+        ctx.fillStyle = '#001018';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        // Draw hazard zone
+        if (hazard !== 'none') {
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6,6]);
+            ctx.beginPath();
+            ctx.arc(280, 120, 50, 0, Math.PI*2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+        // Base path
+        const drawPath = (color, offsetY) => {
+            ctx.strokeStyle = color; ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(20, 220-offsetY);
+            ctx.bezierCurveTo(140, 140-offsetY, 220, 200-offsetY, 400, 40+offsetY);
+            ctx.stroke();
+        };
+        drawPath('#48dbfb', 0);
+        drawPath('#feca57', 20);
+        drawPath('#5f27cd', 35);
+        // Best marker
+        if (best) {
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px Orbitron, monospace';
+            ctx.fillText(`Best: ${best.name}`, 300, 20);
+        }
+    }
+
+    writeDecisionLog(hazard, objective, live, candidates, best) {
+        const el = document.getElementById('odin-log');
+        if (!el) return;
+        const ts = new Date().toLocaleString();
+        const explain = `Objective=${objective.toUpperCase()} | Hazard=${hazard}${live? ' | LiveFeed=ON':''}`;
+        const summary = `Selected ${best.name} after scoring candidates on Fuel, Time, and Safety.`;
+        const tradeoffs = `Trade-offs: ${best.name === 'Alt A' ? 'Better safety, slightly longer time' : best.name === 'Alt B' ? 'Faster time, higher fuel use' : 'Nominal path with balanced metrics'}.`;
+        const metrics = candidates.map(c=>`- ${c.name}: Fuel=${c.fuel.toFixed(0)}, Time=${c.time.toFixed(0)}, Safety=${c.safety.toFixed(0)}`).join('\n');
+        const block = document.createElement('div');
+        block.style.padding = '0.75rem';
+        block.style.margin = '0.5rem 0';
+        block.style.background = 'rgba(0, 212, 255, 0.06)';
+        block.style.borderLeft = '3px solid #00d4ff';
+        block.innerHTML = `
+            <div><strong>${ts}</strong> — ${explain}</div>
+            <pre style="white-space:pre-wrap;color:#9ad2ff;margin:0.5rem 0 0.25rem">${metrics}</pre>
+            <div style="color:#4ecdc4">Decision: ${summary}</div>
+            <div style="color:#feca57">${tradeoffs}</div>
+        `;
+        el.prepend(block);
+        // keep recent logs
+        while (el.children.length > 6) el.removeChild(el.lastChild);
+    }
+}
+
 // Satellite tracker interaction
 class SatelliteTracker {
     constructor() {
@@ -363,6 +473,939 @@ slideInStyle.textContent = `
 `;
 document.head.appendChild(slideInStyle);
 
+// NASA APOD Integration
+class NASAAPODFetcher {
+    constructor() {
+        this.apiKey = "2prCXkv5rkf8ad1tMGsQURxLOzaCx7aFpkI9Gw9Y";
+        this.url = `https://api.nasa.gov/planetary/apod?api_key=${this.apiKey}`;
+        this.init();
+    }
+    
+    init() {
+        // Make it globally accessible for retry functionality
+        window.nasaAPOD = this;
+        this.fetchAPOD();
+    }
+    
+    async fetchAPOD() {
+        const loadingEl = document.querySelector('.apod-loading');
+        const contentEl = document.querySelector('.apod-content');
+        const errorEl = document.querySelector('.apod-error');
+        
+        // Show loading state
+        if (loadingEl) loadingEl.style.display = 'block';
+        if (contentEl) contentEl.style.display = 'none';
+        if (errorEl) errorEl.style.display = 'none';
+        
+        try {
+            const response = await fetch(this.url);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            this.displayAPOD(data);
+            
+        } catch (error) {
+            console.error('Error fetching NASA APOD:', error);
+            this.showError();
+        }
+    }
+    
+    displayAPOD(data) {
+        const loadingEl = document.querySelector('.apod-loading');
+        const contentEl = document.querySelector('.apod-content');
+        const errorEl = document.querySelector('.apod-error');
+        
+        // Update content elements
+        const imageEl = document.getElementById('apod-image');
+        const titleEl = document.getElementById('apod-title');
+        const dateEl = document.getElementById('apod-date');
+        const explanationEl = document.getElementById('apod-explanation');
+        
+        if (imageEl && data.url) {
+            imageEl.src = data.url;
+            imageEl.alt = data.title || 'NASA Astronomy Picture of the Day';
+        }
+        
+        if (titleEl && data.title) {
+            titleEl.textContent = data.title;
+        }
+        
+        if (dateEl && data.date) {
+            const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dateEl.textContent = formattedDate;
+        }
+        
+        if (explanationEl && data.explanation) {
+            explanationEl.textContent = data.explanation;
+        }
+        
+        // Show content, hide loading and error
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (contentEl) contentEl.style.display = 'grid';
+        if (errorEl) errorEl.style.display = 'none';
+        
+        // Add fade-in animation
+        if (contentEl) {
+            contentEl.style.opacity = '0';
+            setTimeout(() => {
+                contentEl.style.transition = 'opacity 0.5s ease';
+                contentEl.style.opacity = '1';
+            }, 100);
+        }
+    }
+    
+    showError() {
+        const loadingEl = document.querySelector('.apod-loading');
+        const contentEl = document.querySelector('.apod-content');
+        const errorEl = document.querySelector('.apod-error');
+        
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (contentEl) contentEl.style.display = 'none';
+        if (errorEl) errorEl.style.display = 'block';
+    }
+}
+
+// Satellite Lab System
+class SatelliteLab {
+    constructor() {
+        this.experiments = {
+            orbitCalculator: new OrbitCalculator(),
+            signalSimulator: new SignalStrengthSimulator(),
+            satelliteDesigner: new SatelliteDesigner(),
+            digitalTwin: new DigitalTwinODIN()
+        };
+        this.init();
+    }
+    
+    init() {
+        // Always add styles so static lab pages get styled
+        this.addLabStyles();
+        this.createLabSection();
+        this.setupLabNavigation();
+        this.initializeExperiments();
+    }
+    
+    createLabSection() {
+        // Check if lab section already exists
+        if (document.getElementById('satellite-lab')) return;
+        
+        const labSection = document.createElement('section');
+        labSection.id = 'satellite-lab';
+        labSection.className = 'satellite-lab';
+        labSection.innerHTML = `
+            <div class="container">
+                <h2 class="section-title">🧪 Satellite Research Lab</h2>
+                <p class="lab-description">Interactive experiments and simulations for satellite research</p>
+                
+                <div class="lab-navigation">
+                    <button class="lab-tab active" data-experiment="orbit">🌍 Orbit Calculator</button>
+                    <button class="lab-tab" data-experiment="signal">📡 Signal Simulator</button>
+                    <button class="lab-tab" data-experiment="designer">🛰️ Satellite Designer</button>
+                    <button class="lab-tab" data-experiment="odin">🧠 Digital Twin (ODIN)</button>
+                </div>
+                
+                <div class="lab-content">
+                    <!-- Orbit Calculator Experiment -->
+                    <div class="lab-experiment active" id="orbit-experiment">
+                        <h3>Orbital Mechanics Calculator</h3>
+                        <div class="experiment-controls">
+                            <div class="control-group">
+                                <label>Altitude (km):</label>
+                                <input type="range" id="altitude-slider" min="200" max="35786" value="400">
+                                <span id="altitude-value">400</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Satellite Mass (kg):</label>
+                                <input type="range" id="mass-slider" min="100" max="10000" value="1000">
+                                <span id="mass-value">1000</span>
+                            </div>
+                            <button class="btn btn-primary" id="calculate-orbit">Calculate Orbit</button>
+                        </div>
+                        <div class="experiment-results">
+                            <div class="result-card">
+                                <h4>Orbital Velocity</h4>
+                                <div class="result-value" id="orbital-velocity">7.67 km/s</div>
+                            </div>
+                            <div class="result-card">
+                                <h4>Orbital Period</h4>
+                                <div class="result-value" id="orbital-period">92.7 minutes</div>
+                            </div>
+                            <div class="result-card">
+                                <h4>Gravitational Force</h4>
+                                <div class="result-value" id="gravitational-force">8829 N</div>
+                            </div>
+                        </div>
+                        <div class="orbit-visualization" id="orbit-viz"></div>
+                    </div>
+                    
+                    <!-- Signal Strength Simulator -->
+                    <div class="lab-experiment" id="signal-experiment">
+                        <h3>Signal Strength Simulator</h3>
+                        <div class="experiment-controls">
+                            <div class="control-group">
+                                <label>Distance to Satellite (km):</label>
+                                <input type="range" id="distance-slider" min="400" max="36000" value="2000">
+                                <span id="distance-value">2000</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Transmitter Power (W):</label>
+                                <input type="range" id="power-slider" min="10" max="1000" value="100">
+                                <span id="power-value">100</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Weather Conditions:</label>
+                                <select id="weather-select">
+                                    <option value="clear">Clear Sky</option>
+                                    <option value="cloudy">Cloudy</option>
+                                    <option value="rain">Rain</option>
+                                    <option value="storm">Storm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="signal-visualization">
+                            <div class="signal-meter">
+                                <div class="signal-bar" id="signal-bar"></div>
+                                <div class="signal-percentage" id="signal-percentage">85%</div>
+                            </div>
+                            <div class="signal-quality" id="signal-quality">Excellent</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Satellite Designer -->
+                    <div class="lab-experiment" id="designer-experiment">
+                        <h3>Satellite Mission Designer</h3>
+                        <div class="designer-interface">
+                            <div class="satellite-builder">
+                                <h4>Build Your Satellite</h4>
+                                <div class="component-selector">
+                                    <div class="component-category">
+                                        <h5>Power System</h5>
+                                        <label><input type="radio" name="power" value="solar"> Solar Panels</label>
+                                        <label><input type="radio" name="power" value="nuclear"> Nuclear RTG</label>
+                                        <label><input type="radio" name="power" value="battery"> Battery Pack</label>
+                                    </div>
+                                    <div class="component-category">
+                                        <h5>Communication</h5>
+                                        <label><input type="radio" name="comm" value="uhf"> UHF Radio</label>
+                                        <label><input type="radio" name="comm" value="xband"> X-Band</label>
+                                        <label><input type="radio" name="comm" value="laser"> Laser Comm</label>
+                                    </div>
+                                    <div class="component-category">
+                                        <h5>Payload</h5>
+                                        <label><input type="radio" name="payload" value="camera"> Imaging Camera</label>
+                                        <label><input type="radio" name="payload" value="radar"> Radar System</label>
+                                        <label><input type="radio" name="payload" value="spectrometer"> Spectrometer</label>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="design-satellite">Design Mission</button>
+                            </div>
+                            <div class="mission-summary" id="mission-summary">
+                                <h4>Mission Analysis</h4>
+                                <div class="summary-content">
+                                    <p>Select components to analyze your satellite mission...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Twin (ODIN) Experiment -->
+                    <div class="lab-experiment" id="odin-experiment">
+                        <h3>ODIN Digital Twin Simulator</h3>
+                        <p class="odin-intro">
+                            A digital twin of the spacecraft and its surrounding space for AI-driven planning. The virtual copy runs locally and updates in real time with space weather and debris data. It serves as a practice ground where AI tests route plans and responses to hazards like solar storms or debris before commanding the real spacecraft.
+                        </p>
+                        <div class="odin-grid">
+                            <div class="odin-panel">
+                                <h4>Scenario & Data</h4>
+                                <div class="control-group">
+                                    <label>Hazard Scenario</label>
+                                    <select id="odin-hazard">
+                                        <option value="none">None</option>
+                                        <option value="solar">Solar Storm</option>
+                                        <option value="debris">Debris Field</option>
+                                        <option value="radiation">High Radiation</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Objective</label>
+                                    <select id="odin-objective">
+                                        <option value="balanced">Balanced (Fuel/Time/Safety)</option>
+                                        <option value="fuel">Minimize Fuel</option>
+                                        <option value="time">Minimize Time</option>
+                                        <option value="safety">Maximize Safety</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Live Data Mode</label>
+                                    <label style="display:block"><input type="checkbox" id="odin-live"/> Simulate live space weather & debris API feed</label>
+                                </div>
+                                <button class="btn btn-primary" id="odin-run">Generate Alternate Routes</button>
+                                <div class="odin-hints">
+                                    <small>Data sources: historical NASA/ESA space weather (2012-2018), simulated live feeds. Optimization uses convex solvers and RL-inspired heuristics. Generative AI proposes candidate routes.</small>
+                                </div>
+                            </div>
+                            <div class="odin-panel">
+                                <h4>Visualization</h4>
+                                <div class="odin-viz" id="odin-viz">
+                                    <div class="odin-earth"></div>
+                                    <canvas id="odin-canvas" width="420" height="240" aria-label="ODIN route visualization"></canvas>
+                                </div>
+                                <div class="legend">
+                                    <span class="legend-item"><span class="swatch swatch-base"></span>Nominal Path</span>
+                                    <span class="legend-item"><span class="swatch swatch-alt1"></span>Alt Route A</span>
+                                    <span class="legend-item"><span class="swatch swatch-alt2"></span>Alt Route B</span>
+                                    <span class="legend-item"><span class="swatch swatch-hazard"></span>Hazard Zone</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="odin-panels">
+                            <div class="odin-panel">
+                                <h4>Data Collection</h4>
+                                <ul class="odin-list">
+                                    <li>Space weather, solar activity, radiation, debris positions via sensors and satellites (2012–2018 + simulated live)</li>
+                                    <li>3D CAD model of spacecraft and environment; physics-based simulation</li>
+                                    <li>Run what-if simulations for predicted storms or debris events</li>
+                                </ul>
+                            </div>
+                            <div class="odin-panel">
+                                <h4>Technology Stack</h4>
+                                <ul class="odin-list">
+                                    <li>APIs for space weather & debris tracking</li>
+                                    <li>3D simulation & CAD toolchain</li>
+                                    <li>Generative AI + reinforcement learning for dynamic re-planning</li>
+                                    <li>Web dashboard and 3D maps for visualization</li>
+                                    <li>Cloud/edge compute for real-time processing</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="odin-panel decision-log">
+                            <h4>AI Decision Log (Human-Readable)</h4>
+                            <div id="odin-log" class="log-entries">
+                                <p>Select a scenario and click "Generate Alternate Routes" to see AI decisions.</p>
+                            </div>
+                        </div>
+                        <div class="odin-panel implementation-notes">
+                            <h4>Implementation Notes</h4>
+                            <p>
+                                Historical space weather data from NASA OMNIWeb and ESA archives provided solar wind, geomagnetic indices, and radiation metrics. A digital twin integrated 3D modeling with scientific computing (MATLAB/SciPy). Trajectory optimization combined convex optimization with RL (TensorFlow/PyTorch). Transformer-based generative models proposed candidate trajectories under hazards. A natural language decision logger explains trade-offs. Dashboards built with D3/Plotly visualize trajectories, hazards, and logs. Cloud deployment enables scalable simulation and fast re-planning.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insert lab section before the contact section
+        const contactSection = document.getElementById('contact');
+        contactSection.parentNode.insertBefore(labSection, contactSection);
+        
+        // Add lab styles
+        this.addLabStyles();
+    }
+    
+    setupLabNavigation() {
+        const labTabs = document.querySelectorAll('.lab-tab');
+        const experiments = document.querySelectorAll('.lab-experiment');
+        
+        labTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and experiments
+                labTabs.forEach(t => t.classList.remove('active'));
+                experiments.forEach(e => e.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding experiment
+                const experimentId = tab.getAttribute('data-experiment') + '-experiment';
+                document.getElementById(experimentId).classList.add('active');
+            });
+        });
+    }
+    
+    initializeExperiments() {
+        // Initialize each experiment
+        Object.values(this.experiments).forEach(experiment => {
+            if (experiment.init) experiment.init();
+        });
+    }
+    
+    addLabStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            .satellite-lab {
+                padding: 5rem 0;
+                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+                position: relative;
+            }
+            
+            .lab-description {
+                text-align: center;
+                color: #b0b0b0;
+                margin-bottom: 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .lab-navigation {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-bottom: 3rem;
+                flex-wrap: wrap;
+            }
+            
+            .lab-tab {
+                padding: 0.8rem 1.5rem;
+                background: rgba(0, 212, 255, 0.1);
+                border: 1px solid #00d4ff;
+                border-radius: 25px;
+                color: #00d4ff;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-family: 'Orbitron', monospace;
+            }
+            
+            .lab-tab:hover {
+                background: rgba(0, 212, 255, 0.2);
+                transform: translateY(-2px);
+            }
+            
+            .lab-tab.active {
+                background: linear-gradient(45deg, #00d4ff, #4ecdc4);
+                color: #000;
+                box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+            }
+            
+            .lab-experiment {
+                display: none;
+                background: rgba(0, 20, 40, 0.8);
+                border-radius: 15px;
+                padding: 2rem;
+                border: 1px solid #00d4ff;
+            }
+            
+            .lab-experiment.active {
+                display: block;
+                animation: fadeInLab 0.5s ease;
+            }
+            
+            .experiment-controls {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .control-group {
+                background: rgba(0, 212, 255, 0.05);
+                padding: 1rem;
+                border-radius: 10px;
+                border: 1px solid rgba(0, 212, 255, 0.2);
+            }
+            
+            .control-group label {
+                display: block;
+                color: #00d4ff;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+            }
+            
+            .control-group input[type="range"] {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+            
+            .control-group span {
+                color: #4ecdc4;
+                font-weight: bold;
+            }
+            
+            .experiment-results {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .result-card {
+                background: linear-gradient(135deg, #1a1a2e, #16213e);
+                padding: 1.5rem;
+                border-radius: 10px;
+                text-align: center;
+                border: 1px solid #4ecdc4;
+            }
+            
+            .result-card h4 {
+                color: #00d4ff;
+                margin-bottom: 0.5rem;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #4ecdc4;
+                font-family: 'Orbitron', monospace;
+            }
+            
+            .orbit-visualization {
+                height: 300px;
+                background: radial-gradient(circle at center, #001122, #000);
+                border-radius: 10px;
+                position: relative;
+                overflow: hidden;
+                border: 1px solid #00d4ff;
+            }
+            
+            .signal-visualization {
+                text-align: center;
+                padding: 2rem;
+            }
+            
+            .signal-meter {
+                width: 200px;
+                height: 20px;
+                background: #333;
+                border-radius: 10px;
+                margin: 0 auto 1rem;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .signal-bar {
+                height: 100%;
+                background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #0abde3);
+                border-radius: 10px;
+                transition: width 0.3s ease;
+            }
+            
+            .signal-percentage {
+                font-size: 2rem;
+                font-weight: bold;
+                color: #4ecdc4;
+                margin-bottom: 0.5rem;
+            }
+            
+            .signal-quality {
+                font-size: 1.2rem;
+                color: #00d4ff;
+            }
+            
+            .designer-interface {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+            
+            .component-selector {
+                display: grid;
+                gap: 1rem;
+            }
+            
+            .component-category {
+                background: rgba(0, 212, 255, 0.05);
+                padding: 1rem;
+                border-radius: 10px;
+                border: 1px solid rgba(0, 212, 255, 0.2);
+            }
+            
+            .component-category h5 {
+                color: #00d4ff;
+                margin-bottom: 0.5rem;
+            }
+            
+            .component-category label {
+                display: block;
+                color: #b0b0b0;
+                margin: 0.3rem 0;
+                cursor: pointer;
+            }
+            
+            .mission-summary {
+                background: rgba(0, 20, 40, 0.8);
+                padding: 1.5rem;
+                border-radius: 10px;
+                border: 1px solid #4ecdc4;
+            }
+            
+            /* ODIN styles */
+            .odin-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .odin-panels {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .odin-panel {
+                background: rgba(0, 212, 255, 0.05);
+                border: 1px solid rgba(0, 212, 255, 0.2);
+                border-radius: 10px;
+                padding: 1rem;
+            }
+            .odin-viz {
+                position: relative;
+                background: radial-gradient(circle at center, #001122, #000);
+                border: 1px solid #00d4ff;
+                border-radius: 10px;
+                height: 260px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+            .odin-earth {
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: radial-gradient(circle, #4ecdc4, #00d4ff);
+                box-shadow: 0 0 20px #4ecdc4;
+                left: 10px;
+                bottom: 10px;
+                opacity: 0.8;
+            }
+            .legend { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+            .legend-item { color: #b0b0b0; font-size: 0.9rem; }
+            .swatch { display: inline-block; width: 14px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+            .swatch-base { background: #48dbfb; }
+            .swatch-alt1 { background: #feca57; }
+            .swatch-alt2 { background: #5f27cd; }
+            .swatch-hazard { background: #ff6b6b; }
+            .decision-log { border-color: #00d4ff; }
+            .decision-log .log-entries { max-height: 220px; overflow: auto; }
+            .decision-log p, .decision-log li, .odin-list li { color: #b0b0b0; }
+            .odin-list { margin: 0; padding-left: 1.2rem; }
+            .odin-intro { color: #b0b0b0; margin-bottom: 1rem; }
+            .implementation-notes p { color: #9ad2ff; font-size: 0.95rem; line-height: 1.6; }
+
+            @keyframes fadeInLab {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            @media (max-width: 768px) {
+                .designer-interface {
+                    grid-template-columns: 1fr;
+                }
+                
+                .experiment-controls {
+                    grid-template-columns: 1fr;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Orbit Calculator Class
+class OrbitCalculator {
+    constructor() {
+        this.earthRadius = 6371; // km
+        this.earthMass = 5.972e24; // kg
+        this.G = 6.674e-11; // m³/kg/s²
+    }
+    
+    init() {
+        const altitudeSlider = document.getElementById('altitude-slider');
+        const massSlider = document.getElementById('mass-slider');
+        const calculateBtn = document.getElementById('calculate-orbit');
+        
+        if (altitudeSlider) {
+            altitudeSlider.addEventListener('input', () => {
+                document.getElementById('altitude-value').textContent = altitudeSlider.value;
+                this.calculateOrbit();
+            });
+        }
+        
+        if (massSlider) {
+            massSlider.addEventListener('input', () => {
+                document.getElementById('mass-value').textContent = massSlider.value;
+                this.calculateOrbit();
+            });
+        }
+        
+        if (calculateBtn) {
+            calculateBtn.addEventListener('click', () => this.calculateOrbit());
+        }
+        
+        // Initial calculation
+        setTimeout(() => this.calculateOrbit(), 100);
+    }
+    
+    calculateOrbit() {
+        const altitude = parseFloat(document.getElementById('altitude-slider')?.value || 400);
+        const mass = parseFloat(document.getElementById('mass-slider')?.value || 1000);
+        
+        const orbitalRadius = (this.earthRadius + altitude) * 1000; // Convert to meters
+        
+        // Calculate orbital velocity: v = sqrt(GM/r)
+        const velocity = Math.sqrt((this.G * this.earthMass) / orbitalRadius) / 1000; // km/s
+        
+        // Calculate orbital period: T = 2π * sqrt(r³/GM)
+        const period = 2 * Math.PI * Math.sqrt(Math.pow(orbitalRadius, 3) / (this.G * this.earthMass)) / 60; // minutes
+        
+        // Calculate gravitational force: F = GMm/r²
+        const force = (this.G * this.earthMass * mass) / Math.pow(orbitalRadius, 2);
+        
+        // Update display
+        const velocityEl = document.getElementById('orbital-velocity');
+        const periodEl = document.getElementById('orbital-period');
+        const forceEl = document.getElementById('gravitational-force');
+        
+        if (velocityEl) velocityEl.textContent = velocity.toFixed(2) + ' km/s';
+        if (periodEl) periodEl.textContent = period.toFixed(1) + ' minutes';
+        if (forceEl) forceEl.textContent = force.toFixed(0) + ' N';
+        
+        this.updateOrbitVisualization(altitude);
+    }
+    
+    updateOrbitVisualization(altitude) {
+        const viz = document.getElementById('orbit-viz');
+        if (!viz) return;
+        
+        viz.innerHTML = `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 60px;
+                height: 60px;
+                background: radial-gradient(circle, #4ecdc4, #00d4ff);
+                border-radius: 50%;
+                box-shadow: 0 0 20px #4ecdc4;
+            "></div>
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: ${120 + altitude/100}px;
+                height: ${120 + altitude/100}px;
+                border: 2px dashed #00d4ff;
+                border-radius: 50%;
+                animation: rotate 10s linear infinite;
+            ">
+                <div style="
+                    position: absolute;
+                    top: -5px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 10px;
+                    height: 10px;
+                    background: #ff6b6b;
+                    border-radius: 50%;
+                    box-shadow: 0 0 10px #ff6b6b;
+                "></div>
+            </div>
+        `;
+        
+        // Add rotation animation if not exists
+        if (!document.querySelector('#rotate-animation')) {
+            const rotateStyle = document.createElement('style');
+            rotateStyle.id = 'rotate-animation';
+            rotateStyle.textContent = `
+                @keyframes rotate {
+                    from { transform: translate(-50%, -50%) rotate(0deg); }
+                    to { transform: translate(-50%, -50%) rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(rotateStyle);
+        }
+    }
+}
+
+// Signal Strength Simulator Class
+class SignalStrengthSimulator {
+    init() {
+        const distanceSlider = document.getElementById('distance-slider');
+        const powerSlider = document.getElementById('power-slider');
+        const weatherSelect = document.getElementById('weather-select');
+        
+        [distanceSlider, powerSlider, weatherSelect].forEach(element => {
+            if (element) {
+                element.addEventListener('input', () => this.calculateSignal());
+                element.addEventListener('change', () => this.calculateSignal());
+            }
+        });
+        
+        if (distanceSlider) {
+            distanceSlider.addEventListener('input', () => {
+                document.getElementById('distance-value').textContent = distanceSlider.value;
+            });
+        }
+        
+        if (powerSlider) {
+            powerSlider.addEventListener('input', () => {
+                document.getElementById('power-value').textContent = powerSlider.value;
+            });
+        }
+        
+        setTimeout(() => this.calculateSignal(), 100);
+    }
+    
+    calculateSignal() {
+        const distance = parseFloat(document.getElementById('distance-slider')?.value || 2000);
+        const power = parseFloat(document.getElementById('power-slider')?.value || 100);
+        const weather = document.getElementById('weather-select')?.value || 'clear';
+        
+        // Signal strength calculation (simplified)
+        let baseSignal = (power / Math.pow(distance / 1000, 2)) * 100;
+        
+        // Weather attenuation
+        const weatherFactors = {
+            clear: 1.0,
+            cloudy: 0.9,
+            rain: 0.7,
+            storm: 0.4
+        };
+        
+        const signalStrength = Math.min(100, baseSignal * weatherFactors[weather]);
+        
+        // Update visualization
+        const signalBar = document.getElementById('signal-bar');
+        const signalPercentage = document.getElementById('signal-percentage');
+        const signalQuality = document.getElementById('signal-quality');
+        
+        if (signalBar) {
+            signalBar.style.width = signalStrength + '%';
+        }
+        
+        if (signalPercentage) {
+            signalPercentage.textContent = Math.round(signalStrength) + '%';
+        }
+        
+        if (signalQuality) {
+            let quality = 'Poor';
+            if (signalStrength > 80) quality = 'Excellent';
+            else if (signalStrength > 60) quality = 'Good';
+            else if (signalStrength > 40) quality = 'Fair';
+            
+            signalQuality.textContent = quality;
+            signalQuality.style.color = signalStrength > 60 ? '#4ecdc4' : signalStrength > 40 ? '#feca57' : '#ff6b6b';
+        }
+    }
+}
+
+// Satellite Designer Class
+class SatelliteDesigner {
+    init() {
+        const designBtn = document.getElementById('design-satellite');
+        const radioInputs = document.querySelectorAll('input[type="radio"]');
+        
+        radioInputs.forEach(input => {
+            input.addEventListener('change', () => this.updateMissionAnalysis());
+        });
+        
+        if (designBtn) {
+            designBtn.addEventListener('click', () => this.generateMission());
+        }
+    }
+    
+    updateMissionAnalysis() {
+        const power = document.querySelector('input[name="power"]:checked')?.value;
+        const comm = document.querySelector('input[name="comm"]:checked')?.value;
+        const payload = document.querySelector('input[name="payload"]:checked')?.value;
+        
+        const summaryContent = document.querySelector('.summary-content');
+        if (!summaryContent) return;
+        
+        if (power && comm && payload) {
+            const analysis = this.analyzeMission(power, comm, payload);
+            summaryContent.innerHTML = `
+                <div class="mission-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Mission Type:</span>
+                        <span class="stat-value">${analysis.missionType}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Power Consumption:</span>
+                        <span class="stat-value">${analysis.powerConsumption}W</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Data Rate:</span>
+                        <span class="stat-value">${analysis.dataRate}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Mission Duration:</span>
+                        <span class="stat-value">${analysis.duration}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Estimated Cost:</span>
+                        <span class="stat-value">$${analysis.cost}M</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    analyzeMission(power, comm, payload) {
+        const configs = {
+            power: {
+                solar: { consumption: 200, cost: 5, duration: '5-7 years' },
+                nuclear: { consumption: 50, cost: 20, duration: '10-15 years' },
+                battery: { consumption: 100, cost: 2, duration: '6 months' }
+            },
+            comm: {
+                uhf: { dataRate: '9.6 kbps', cost: 3 },
+                xband: { dataRate: '150 Mbps', cost: 8 },
+                laser: { dataRate: '1.2 Gbps', cost: 15 }
+            },
+            payload: {
+                camera: { type: 'Earth Observation', cost: 10 },
+                radar: { type: 'Weather Monitoring', cost: 25 },
+                spectrometer: { type: 'Scientific Research', cost: 18 }
+            }
+        };
+        
+        const powerConfig = configs.power[power];
+        const commConfig = configs.comm[comm];
+        const payloadConfig = configs.payload[payload];
+        
+        return {
+            missionType: payloadConfig.type,
+            powerConsumption: powerConfig.consumption,
+            dataRate: commConfig.dataRate,
+            duration: powerConfig.duration,
+            cost: (powerConfig.cost + commConfig.cost + payloadConfig.cost).toFixed(1)
+        };
+    }
+    
+    generateMission() {
+        const power = document.querySelector('input[name="power"]:checked')?.value;
+        const comm = document.querySelector('input[name="comm"]:checked')?.value;
+        const payload = document.querySelector('input[name="payload"]:checked')?.value;
+        
+        if (!power || !comm || !payload) {
+            alert('Please select all components before designing the mission!');
+            return;
+        }
+        
+        const missionNames = [
+            'SkyWatch', 'OrbitGuard', 'CosmicEye', 'StarLink', 'SpaceBeacon',
+            'AstroSentinel', 'GalaxyProbe', 'NebulaScout', 'VoidWatcher', 'StellarVision'
+        ];
+        
+        const missionName = missionNames[Math.floor(Math.random() * missionNames.length)];
+        
+        setTimeout(() => {
+            alert(`🚀 Mission "${missionName}" successfully designed!\n\nYour satellite configuration has been optimized for maximum efficiency. Mission parameters saved to the research database.`);
+        }, 500);
+    }
+}
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new SatelliteTracker();
@@ -370,6 +1413,8 @@ document.addEventListener('DOMContentLoaded', () => {
     new ParallaxEffect();
     new SatelliteDataSimulator();
     new AnimationController();
+    new NASAAPODFetcher();
+    new SatelliteLab(); // Add the new lab system
     
     // Add loading animation
     document.body.style.opacity = '0';

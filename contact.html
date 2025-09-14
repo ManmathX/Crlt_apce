@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Space Satellite Research Hackathon</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="floating-objects">
+        <div class="asteroid asteroid-1">🪨</div>
+        <div class="asteroid asteroid-2">☄️</div>
+        <div class="asteroid asteroid-3">🌑</div>
+        <div class="space-debris debris-1">🛸</div>
+        <div class="space-debris debris-2">🚀</div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">🛰️</span>
+                <span>Team Mama</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="satellites.html">Satellites</a></li>
+                <li><a href="lab.html">Lab</a></li>
+                <li><a href="nasa-apod.html">NASA APOD</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Join the Mission</h1>
+            <p class="page-subtitle">Ready to explore space? Connect with our research team</p>
+        </div>
+    </section>
+
+                <div class="contact-form">
+                    <form id="hackathon-form">
+                        <input type="text" id="name" name="name" placeholder="Your Name" aria-label="Your Name" required>
+                        <input type="email" id="email" name="email" placeholder="Your Email" aria-label="Your Email" required>
+                        <select id="expertise" name="expertise" aria-label="Your Expertise" required>
+                            <option value="">Select Your Expertise</option>
+                            <option value="developer">Software Developer</option>
+                            <option value="researcher">Space Researcher</option>
+                            <option value="engineer">Aerospace Engineer</option>
+                            <option value="data-scientist">Data Scientist</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <textarea id="message" name="message" placeholder="Tell us about your interest in satellite research" aria-label="Message" rows="4"></textarea>
+                        <button type="submit" class="btn btn-primary">Launch Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">👨‍🚀</div>
+                    <h3>Dr. Alex Chen</h3>
+                    <p>Lead Satellite Engineer</p>
+                    <div class="member-bio">Specializes in orbital mechanics and satellite design with 15+ years of experience.</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👩‍🔬</div>
+                    <h3>Prof. Sarah Martinez</h3>
+                    <p>Research Director</p>
+                    <div class="member-bio">Expert in space communications and quantum satellite networks.</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👨‍💻</div>
+                    <h3>Mike Johnson</h3>
+                    <p>Software Architect</p>
+                    <div class="member-bio">Develops AI-powered satellite tracking and data analysis systems.</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👩‍🚀</div>
+                    <h3>Dr. Lisa Wong</h3>
+                    <p>Mission Specialist</p>
+                    <div class="member-bio">Coordinates international space missions and satellite deployments.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Space Satellite Research Hackathon. Reaching for the stars.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

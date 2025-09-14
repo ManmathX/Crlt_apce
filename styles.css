@@ -11,6 +11,13 @@ body {
     color: #ffffff;
     overflow-x: hidden;
     line-height: 1.6;
+    perspective: 1000px;
+}
+
+/* 3D Scene Setup */
+html {
+    perspective: 2000px;
+    perspective-origin: center center;
 }
 
 .container {
@@ -50,6 +57,134 @@ body {
 @keyframes move-twinkle {
     from { transform: translateY(0px); }
     to { transform: translateY(-1000px); }
+}
+
+/* 3D Floating Objects */
+.floating-objects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.asteroid, .space-debris, .nebula {
+    position: absolute;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.asteroid-1 {
+    top: 20%;
+    left: 10%;
+    font-size: 2rem;
+    animation: float3D 8s ease-in-out infinite, rotate3D 12s linear infinite;
+    transform-style: preserve-3d;
+}
+
+.asteroid-2 {
+    top: 60%;
+    right: 15%;
+    font-size: 1.5rem;
+    animation: float3D 6s ease-in-out infinite reverse, rotate3D 8s linear infinite reverse;
+    transform-style: preserve-3d;
+}
+
+.asteroid-3 {
+    bottom: 30%;
+    left: 20%;
+    font-size: 1.8rem;
+    animation: float3D 10s ease-in-out infinite, rotate3D 15s linear infinite;
+    transform-style: preserve-3d;
+}
+
+.debris-1 {
+    top: 40%;
+    left: 70%;
+    font-size: 1.2rem;
+    animation: drift3D 15s ease-in-out infinite, spin3D 5s linear infinite;
+    transform-style: preserve-3d;
+}
+
+.debris-2 {
+    bottom: 20%;
+    right: 30%;
+    font-size: 1.4rem;
+    animation: drift3D 12s ease-in-out infinite reverse, spin3D 7s linear infinite reverse;
+    transform-style: preserve-3d;
+}
+
+.nebula {
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3), rgba(255, 107, 107, 0.2), transparent);
+    filter: blur(20px);
+}
+
+.nebula-1 {
+    top: 10%;
+    right: 20%;
+    width: 200px;
+    height: 200px;
+    animation: pulse3D 20s ease-in-out infinite, drift3D 25s ease-in-out infinite;
+}
+
+.nebula-2 {
+    bottom: 15%;
+    left: 15%;
+    width: 150px;
+    height: 150px;
+    animation: pulse3D 15s ease-in-out infinite reverse, drift3D 20s ease-in-out infinite reverse;
+}
+
+@keyframes float3D {
+    0%, 100% { 
+        transform: translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg);
+    }
+    25% { 
+        transform: translateY(-20px) translateZ(50px) rotateX(10deg) rotateY(15deg);
+    }
+    50% { 
+        transform: translateY(-40px) translateZ(100px) rotateX(20deg) rotateY(30deg);
+    }
+    75% { 
+        transform: translateY(-20px) translateZ(50px) rotateX(10deg) rotateY(15deg);
+    }
+}
+
+@keyframes drift3D {
+    0%, 100% { 
+        transform: translateX(0px) translateZ(0px) rotateZ(0deg);
+    }
+    33% { 
+        transform: translateX(30px) translateZ(80px) rotateZ(120deg);
+    }
+    66% { 
+        transform: translateX(-30px) translateZ(40px) rotateZ(240deg);
+    }
+}
+
+@keyframes rotate3D {
+    from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+    to { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+}
+
+@keyframes spin3D {
+    from { transform: rotateZ(0deg) rotateY(0deg); }
+    to { transform: rotateZ(360deg) rotateY(360deg); }
+}
+
+@keyframes pulse3D {
+    0%, 100% { 
+        transform: scale(1) translateZ(0px);
+        opacity: 0.3;
+    }
+    50% { 
+        transform: scale(1.2) translateZ(50px);
+        opacity: 0.6;
+    }
 }
 
 /* Navigation */
@@ -148,6 +283,7 @@ body {
     margin-bottom: 1rem;
     background: linear-gradient(45deg, #00d4ff, #ff6b6b, #4ecdc4);
     background-size: 300% 300%;
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: gradient-shift 4s ease infinite;
@@ -179,9 +315,25 @@ body {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     text-decoration: none;
     display: inline-block;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    border-radius: inherit;
+    transform: translateZ(-10px);
+    opacity: 0.5;
+    transition: all 0.4s ease;
 }
 
 .btn-primary {
@@ -191,8 +343,13 @@ body {
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+    transform: translateY(-5px) translateZ(10px) rotateX(10deg);
+    box-shadow: 0 15px 35px rgba(0, 212, 255, 0.6);
+}
+
+.btn-primary:hover::before {
+    transform: translateZ(-20px) translateY(10px);
+    opacity: 0.8;
 }
 
 .btn-secondary {
@@ -204,37 +361,79 @@ body {
 .btn-secondary:hover {
     background: #00d4ff;
     color: #000;
-    transform: translateY(-2px);
+    transform: translateY(-5px) translateZ(10px) rotateX(-10deg);
+    box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
 }
 
-/* Satellite Orbit Animation */
+/* 3D Satellite Orbit Animation */
 .satellite-orbit {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotateX(60deg);
     width: 400px;
     height: 400px;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 2px solid rgba(0, 212, 255, 0.4);
     border-radius: 50%;
-    animation: rotate 20s linear infinite;
+    animation: rotate3DOrbit 20s linear infinite;
+    transform-style: preserve-3d;
+    box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
 }
 
 .satellite {
     position: absolute;
-    top: -10px;
+    top: -15px;
     left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    background: #ff6b6b;
+    transform: translateX(-50%) translateZ(50px);
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, #ff6b6b, #ff4757);
     border-radius: 50%;
-    box-shadow: 0 0 20px #ff6b6b;
+    box-shadow: 0 0 30px #ff6b6b, 0 0 60px rgba(255, 107, 107, 0.5);
+    animation: satellitePulse 2s ease-in-out infinite;
 }
 
-@keyframes rotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+.satellite::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid rgba(255, 107, 107, 0.3);
+    border-radius: 50%;
+    animation: satelliteRing 3s linear infinite;
+}
+
+@keyframes rotate3DOrbit {
+    from { 
+        transform: translate(-50%, -50%) rotateX(60deg) rotateY(0deg) rotateZ(0deg); 
+    }
+    to { 
+        transform: translate(-50%, -50%) rotateX(60deg) rotateY(360deg) rotateZ(360deg); 
+    }
+}
+
+@keyframes satellitePulse {
+    0%, 100% { 
+        transform: translateX(-50%) translateZ(50px) scale(1);
+        box-shadow: 0 0 30px #ff6b6b, 0 0 60px rgba(255, 107, 107, 0.5);
+    }
+    50% { 
+        transform: translateX(-50%) translateZ(80px) scale(1.2);
+        box-shadow: 0 0 40px #ff6b6b, 0 0 80px rgba(255, 107, 107, 0.8);
+    }
+}
+
+@keyframes satelliteRing {
+    0% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    100% { 
+        transform: scale(2) rotate(360deg);
+        opacity: 0;
+    }
 }
 
 /* Section Styles */
@@ -253,6 +452,7 @@ section {
 /* Mission Section */
 .mission {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    perspective: 1500px;
 }
 
 .mission-grid {
@@ -261,24 +461,57 @@ section {
     gap: 2rem;
 }
 
-.mission-card {
+/* 3D Card Flip Effects */
+.card-3d {
+    perspective: 1000px;
+    height: 300px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.card-3d:hover .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
     background: rgba(255, 255, 255, 0.05);
     padding: 2rem;
     border-radius: 15px;
-    text-align: center;
     border: 1px solid rgba(0, 212, 255, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.mission-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+.card-back {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: #00d4ff;
+    transform: rotateY(180deg);
+}
+
+.card-front:hover {
+    box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+    transform: translateZ(20px);
 }
 
 .card-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
 }
 
 .mission-card h3 {
@@ -286,6 +519,19 @@ section {
     font-size: 1.3rem;
     margin-bottom: 1rem;
     color: #00d4ff;
+}
+
+.card-back ul {
+    list-style: none;
+    text-align: left;
+}
+
+.card-back li {
+    margin: 0.8rem 0;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid #00d4ff;
 }
 
 /* Research Section */
@@ -370,6 +616,8 @@ section {
     width: 300px;
     height: 300px;
     margin: 0 auto;
+    perspective: 1000px;
+    transform-style: preserve-3d;
 }
 
 .earth {
@@ -380,59 +628,152 @@ section {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
-    animation: earth-rotate 10s linear infinite;
+    transform: translate(-50%, -50%) rotateX(15deg);
+    box-shadow: 0 0 30px rgba(74, 144, 226, 0.5), 
+                0 0 60px rgba(74, 144, 226, 0.3),
+                inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+    animation: earth-rotate3D 15s linear infinite;
+    transform-style: preserve-3d;
 }
 
-@keyframes earth-rotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+.earth::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid rgba(74, 144, 226, 0.2);
+    border-radius: 50%;
+    animation: earthAtmosphere 8s ease-in-out infinite;
+}
+
+.earth::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+    border-radius: 50%;
+    animation: earthGlow 6s ease-in-out infinite;
+}
+
+@keyframes earth-rotate3D {
+    from { transform: translate(-50%, -50%) rotateX(15deg) rotateY(0deg); }
+    to { transform: translate(-50%, -50%) rotateX(15deg) rotateY(360deg); }
+}
+
+@keyframes earthAtmosphere {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 0.3;
+    }
+    50% { 
+        transform: scale(1.1) rotate(180deg);
+        opacity: 0.6;
+    }
+}
+
+@keyframes earthGlow {
+    0%, 100% { 
+        opacity: 0.2;
+        transform: rotate(0deg);
+    }
+    50% { 
+        opacity: 0.5;
+        transform: rotate(180deg);
+    }
 }
 
 .satellite-orbit-1, .satellite-orbit-2, .satellite-orbit-3 {
     position: absolute;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 2px solid rgba(0, 212, 255, 0.4);
     border-radius: 50%;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform-style: preserve-3d;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
 }
 
 .satellite-orbit-1 {
     width: 200px;
     height: 200px;
-    animation: orbit 8s linear infinite;
+    transform: translate(-50%, -50%) rotateX(75deg);
+    animation: orbit3D-1 8s linear infinite;
 }
 
 .satellite-orbit-2 {
     width: 250px;
     height: 250px;
-    animation: orbit 12s linear infinite reverse;
+    transform: translate(-50%, -50%) rotateX(60deg);
+    animation: orbit3D-2 12s linear infinite reverse;
 }
 
 .satellite-orbit-3 {
     width: 300px;
     height: 300px;
-    animation: orbit 15s linear infinite;
+    transform: translate(-50%, -50%) rotateX(45deg);
+    animation: orbit3D-3 15s linear infinite;
 }
 
-@keyframes orbit {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+@keyframes orbit3D-1 {
+    from { transform: translate(-50%, -50%) rotateX(75deg) rotateY(0deg); }
+    to { transform: translate(-50%, -50%) rotateX(75deg) rotateY(360deg); }
+}
+
+@keyframes orbit3D-2 {
+    from { transform: translate(-50%, -50%) rotateX(60deg) rotateY(0deg); }
+    to { transform: translate(-50%, -50%) rotateX(60deg) rotateY(360deg); }
+}
+
+@keyframes orbit3D-3 {
+    from { transform: translate(-50%, -50%) rotateX(45deg) rotateY(0deg); }
+    to { transform: translate(-50%, -50%) rotateX(45deg) rotateY(360deg); }
 }
 
 .satellite-dot {
     position: absolute;
-    top: -5px;
+    top: -8px;
     left: 50%;
-    transform: translateX(-50%);
-    width: 10px;
-    height: 10px;
-    background: #ff6b6b;
+    transform: translateX(-50%) translateZ(20px);
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, #ff6b6b, #ff4757);
     border-radius: 50%;
-    box-shadow: 0 0 15px #ff6b6b;
+    box-shadow: 0 0 20px #ff6b6b, 0 0 40px rgba(255, 107, 107, 0.5);
     cursor: pointer;
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.satellite-dot:hover {
+    transform: translateX(-50%) translateZ(40px) scale(1.5);
+    box-shadow: 0 0 30px #ff6b6b, 0 0 60px rgba(255, 107, 107, 0.8);
+}
+
+.satellite-dot::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 50%;
+    animation: satelliteDotPulse 2s ease-in-out infinite;
+}
+
+@keyframes satelliteDotPulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% { 
+        transform: scale(2);
+        opacity: 0;
+    }
 }
 
 .satellite-info {
@@ -461,6 +802,110 @@ section {
     font-family: 'Orbitron', monospace;
     color: #00d4ff;
     margin-bottom: 0.5rem;
+}
+
+/* NASA APOD Section */
+.nasa-section {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    position: relative;
+}
+
+.apod-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.apod-loading {
+    text-align: center;
+    padding: 3rem;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 212, 255, 0.3);
+    border-top: 3px solid #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.apod-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.apod-image-container {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+#apod-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+#apod-image:hover {
+    transform: scale(1.05);
+}
+
+.apod-info {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+#apod-title {
+    font-family: 'Orbitron', monospace;
+    color: #00d4ff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#apod-date {
+    color: #ff6b6b;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+#apod-explanation {
+    line-height: 1.8;
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.apod-credits {
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    padding-top: 1rem;
+    color: #888;
+}
+
+.apod-error {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 /* Contact Section */
@@ -556,6 +1001,10 @@ section {
         text-align: center;
     }
     
+    .apod-content {
+        grid-template-columns: 1fr;
+    }
+    
     .contact-content {
         grid-template-columns: 1fr;
     }
@@ -575,5 +1024,371 @@ section {
     
     .timeline-marker {
         left: 20px;
+    }
+    
+    .apod-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Page-specific styles */
+.page-header {
+    padding: 8rem 0 4rem;
+    text-align: center;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.page-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #00d4ff;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: #b0b0b0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Navigation active state */
+.nav-menu a.active {
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+}
+
+/* Overview section for home page */
+.overview {
+    padding: 5rem 0;
+    background: rgba(0, 20, 40, 0.3);
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.overview-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.overview-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.overview-card:hover::before {
+    left: 100%;
+}
+
+.overview-card:hover {
+    transform: translateY(-10px);
+    border-color: #00d4ff;
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+}
+
+.overview-card .card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.overview-card h3 {
+    color: #00d4ff;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.overview-card p {
+    color: #b0b0b0;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.card-link {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.card-link:hover {
+    color: #00d4ff;
+}
+
+/* Mission Goals */
+.mission-goals {
+    padding: 5rem 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.goal-item {
+    text-align: center;
+    padding: 2rem;
+}
+
+.goal-number {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #00d4ff;
+    font-family: 'Orbitron', monospace;
+    margin-bottom: 1rem;
+}
+
+.goal-item h3 {
+    color: #4ecdc4;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.goal-item p {
+    color: #b0b0b0;
+    line-height: 1.6;
+}
+
+/* Publications */
+.publications {
+    padding: 5rem 0;
+    background: rgba(0, 20, 40, 0.3);
+}
+
+.publications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.publication-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.publication-card:hover {
+    transform: translateY(-5px);
+    border-color: #4ecdc4;
+    box-shadow: 0 10px 25px rgba(78, 205, 196, 0.2);
+}
+
+.pub-date {
+    color: #00d4ff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.publication-card h3 {
+    color: #4ecdc4;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.publication-card p {
+    color: #b0b0b0;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.pub-authors {
+    color: #888;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* Satellite Statistics */
+.satellite-stats {
+    padding: 5rem 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: #00d4ff;
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #00d4ff;
+    font-family: 'Orbitron', monospace;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #4ecdc4;
+    font-weight: 600;
+}
+
+/* APOD Archive */
+.apod-archive {
+    padding: 5rem 0;
+    background: rgba(0, 20, 40, 0.3);
+}
+
+.archive-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0 3rem;
+    flex-wrap: wrap;
+}
+
+.date-picker {
+    padding: 0.8rem 1rem;
+    background: rgba(0, 20, 40, 0.8);
+    border: 1px solid #00d4ff;
+    border-radius: 25px;
+    color: #00d4ff;
+    font-family: 'Orbitron', monospace;
+}
+
+.archive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.archive-item {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.archive-item:hover {
+    transform: translateY(-5px);
+    border-color: #4ecdc4;
+}
+
+.archive-date {
+    color: #00d4ff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.archive-item p {
+    color: #b0b0b0;
+    line-height: 1.6;
+}
+
+/* Team Section */
+.team-section {
+    padding: 5rem 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.team-member {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+    border-color: #00d4ff;
+    box-shadow: 0 15px 30px rgba(0, 212, 255, 0.2);
+}
+
+.member-avatar {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.team-member h3 {
+    color: #00d4ff;
+    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.team-member p {
+    color: #4ecdc4;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.member-bio {
+    color: #b0b0b0;
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+/* Additional responsive styles for new pages */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .overview-grid,
+    .goals-grid,
+    .publications-grid,
+    .stats-grid,
+    .archive-grid,
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .archive-controls {
+        flex-direction: column;
+        align-items: center;
     }
 }

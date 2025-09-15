@@ -1951,7 +1951,7 @@ class SolarSystemAPI {
             this.updateResearchSection();
             
         } catch (error) {
-            console.warn("Solar System API unavailable, using fallback data:", error);
+            console.log("Loading fallback solar system data");
             this.loadFallbackData();
         }
     }

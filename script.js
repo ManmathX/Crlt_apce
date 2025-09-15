@@ -1722,6 +1722,115 @@ class SatelliteDesigner {
     }
 }
 
+// Solar System API Integration
+class SolarSystemAPI {
+    constructor() {
+        this.apiEndpoint = '/api/solar-system/bodies';
+        this.celestialBodies = [];
+        this.init();
+    }
+    
+    init() {
+        this.fetchBodies();
+        // UI setup is handled in updateSatelliteSection and updateResearchSection
+    }
+    
+    async fetchBodies() {
+        try {
+            const response = await fetch('/api/solar-system/bodies');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            this.celestialBodies = data.bodies || [];
+            console.log("Celestial Bodies loaded:", this.celestialBodies.length);
+            
+            // Update UI with real data
+            this.updateSatelliteSection();
+            this.updateResearchSection();
+            
+        } catch (error) {
+            console.warn("Solar System API unavailable, using fallback data:", error);
+            this.loadFallbackData();
+        }
+    }
+    
+    updateSatelliteSection() {
+        // Add real celestial body data to satellite tracking
+        const satelliteTracker = document.querySelector('.satellite-tracker');
+        if (satelliteTracker && this.celestialBodies.length > 0) {
+            this.addCelestialBodiesInfo();
+        }
+    }
+    
+    updateResearchSection() {
+        // Add real solar system data to research timeline
+        const researchSection = document.querySelector('.research');
+        if (researchSection && this.celestialBodies.length > 0) {
+            this.addRealResearchData();
+        }
+    }
+    
+    addCelestialBodiesInfo() {
+        const infoContainer = document.querySelector('.satellite-info');
+        if (!infoContainer) return;
+        
+        // Add a new section for celestial bodies
+        const celestialSection = document.createElement('div');
+        celestialSection.className = 'celestial-bodies-section';
+        celestialSection.innerHTML = `
+            <h4>Real Solar System Data</h4>
+            <div class="celestial-grid">
+                ${this.celestialBodies.slice(0, 6).map(body => `
+                    <div class="celestial-card">
+                        <h5>${body.englishName}</h5>
+                        <p>Type: ${body.bodyType || 'Unknown'}</p>
+                        ${body.meanRadius ? `<p>Radius: ${body.meanRadius.toLocaleString()} km</p>` : ''}
+                        ${body.mass ? `<p>Mass: ${body.mass.massValue}×10^${body.mass.massExponent} kg</p>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        infoContainer.appendChild(celestialSection);
+    }
+    
+    addRealResearchData() {
+        const timelineContainer = document.querySelector('.research-timeline');
+        if (!timelineContainer) return;
+        
+        // Add real solar system research based on actual data
+        const newResearchItem = document.createElement('div');
+        newResearchItem.className = 'timeline-item';
+        newResearchItem.innerHTML = `
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+                <h3>Real-Time Solar System Analysis</h3>
+                <p>Live integration with Solar System API providing data on ${this.celestialBodies.length} celestial bodies including planets, moons, and asteroids.</p>
+                <span class="timeline-date">2025</span>
+            </div>
+        `;
+        
+        timelineContainer.appendChild(newResearchItem);
+    }
+    
+    loadFallbackData() {
+        // Fallback data when API is unavailable
+        this.celestialBodies = [
+            { englishName: "Earth", bodyType: "Planet", meanRadius: 6371 },
+            { englishName: "Moon", bodyType: "Moon", meanRadius: 1737 },
+            { englishName: "Mars", bodyType: "Planet", meanRadius: 3390 }
+        ];
+        this.updateSatelliteSection();
+    }
+    
+    getCelestialBodies() {
+        return this.celestialBodies;
+    }
+}
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new SatelliteTracker();
@@ -1731,6 +1840,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new AnimationController();
     new NASAAPODFetcher();
     new SatelliteLab(); // Add the new lab system
+    new SolarSystemAPI(); // Add Solar System API integration
     
     // Add loading animation
     document.body.style.opacity = '0';

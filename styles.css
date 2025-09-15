@@ -1372,6 +1372,56 @@ section {
     font-size: 0.9rem;
 }
 
+/* Celestial Bodies Section Styling */
+.celestial-bodies-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.celestial-bodies-section h4 {
+    color: #00d4ff;
+    margin-bottom: 15px;
+    font-family: 'Orbitron', monospace;
+    text-align: center;
+}
+
+.celestial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.celestial-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.celestial-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: #00d4ff;
+    transform: translateY(-2px);
+}
+
+.celestial-card h5 {
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+}
+
+.celestial-card p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    margin: 4px 0;
+}
+
 /* Additional responsive styles for new pages */
 @media (max-width: 768px) {
     .page-title {
@@ -1390,5 +1440,9 @@ section {
     .archive-controls {
         flex-direction: column;
         align-items: center;
+    }
+    
+    .celestial-grid {
+        grid-template-columns: 1fr;
     }
 }

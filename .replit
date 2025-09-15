@@ -21,20 +21,20 @@ args = "Space Satellite Website"
 name = "Space Satellite Website"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python -m http.server 5000 --bind 0.0.0.0"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python combined_server.py"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 35249
+localPort = 40969
 externalPort = 3000
 
 [deployment]

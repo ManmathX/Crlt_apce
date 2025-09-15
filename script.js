@@ -1758,7 +1758,7 @@ class SolarSystemAPI {
     }
     
     updateSatelliteSection() {
-        // Add real celestial body data to satellite tracking
+        // Only add celestial body data to satellite tracking if the satellite tracker exists
         const satelliteTracker = document.querySelector('.satellite-tracker');
         if (satelliteTracker && this.celestialBodies.length > 0) {
             this.addCelestialBodiesInfo();
@@ -1766,7 +1766,7 @@ class SolarSystemAPI {
     }
     
     updateResearchSection() {
-        // Add real solar system data to research timeline
+        // Only add real solar system data to research timeline if it exists
         const researchSection = document.querySelector('.research');
         if (researchSection && this.celestialBodies.length > 0) {
             this.addRealResearchData();

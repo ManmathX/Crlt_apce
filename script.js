@@ -933,9 +933,14 @@ class SatelliteLab {
             </div>
         `;
         
-        // Insert lab section before the contact section
+        // Insert lab section before the contact section (if contact section exists)
         const contactSection = document.getElementById('contact');
-        contactSection.parentNode.insertBefore(labSection, contactSection);
+        if (contactSection && contactSection.parentNode) {
+            contactSection.parentNode.insertBefore(labSection, contactSection);
+        } else {
+            // If no contact section, append to body
+            document.body.appendChild(labSection);
+        }
         
         // Add lab styles
         this.addLabStyles();

@@ -964,6 +964,10 @@ class SatelliteLab {
                 const targetExperiment = document.getElementById(experimentId);
                 if (targetExperiment) {
                     targetExperiment.classList.add('active');
+                    // If Solar Eyes tab, render saved observations
+                    if (experimentId === 'solareyes-experiment' && typeof this.renderSolarEyesObservations === 'function') {
+                        this.renderSolarEyesObservations();
+                    }
                 }
             });
         });
@@ -1035,6 +1039,23 @@ class SatelliteLab {
         
         // Initialize signal strength
         this.updateSignalStrength();
+
+        // Solar Eyes Observations
+        const obsTextarea = document.getElementById('observation-text');
+        const saveObsBtn = document.getElementById('save-observation');
+        if (saveObsBtn && obsTextarea) {
+            saveObsBtn.addEventListener('click', () => {
+                const text = (obsTextarea.value || '').trim();
+                if (!text) return;
+                const items = this.getSolarEyesObservations();
+                items.unshift({ id: Date.now(), text, ts: new Date().toISOString() });
+                this.setSolarEyesObservations(items);
+                obsTextarea.value = '';
+                this.renderSolarEyesObservations();
+            });
+            // Render once on load if the section exists
+            this.renderSolarEyesObservations();
+        }
     }
     
     calculateOrbit() {
@@ -2030,6 +2051,164 @@ class SolarSystemAPI {
     }
 }
 
+// Observations page controller
+class ObservationsController {
+    constructor() {
+        // Only activate on observations.html where inputs exist
+        this.titleEl = document.getElementById('obs-title');
+        this.textEl = document.getElementById('obs-text');
+        this.tagsEl = document.getElementById('obs-tags');
+        this.saveBtn = document.getElementById('obs-save');
+        this.filterEl = document.getElementById('obs-filter');
+        this.listEl = document.getElementById('obs-list');
+        
+        if (this.saveBtn && this.textEl && this.listEl) {
+            this.init();
+        }
+    }
+    
+    init() {
+        // Save observation
+        this.saveBtn.addEventListener('click', () => this.saveObservation());
+        
+        // Filter observations
+        if (this.filterEl) {
+            this.filterEl.addEventListener('input', () => this.renderObservations());
+        }
+        
+        // Load and render existing observations
+        this.renderObservations();
+    }
+    
+    saveObservation() {
+        const title = (this.titleEl?.value || '').trim();
+        const text = (this.textEl?.value || '').trim();
+        const tags = (this.tagsEl?.value || '').trim();
+        
+        if (!text) {
+            alert('Please enter an observation before saving.');
+            return;
+        }
+        
+        const observation = {
+            id: Date.now(),
+            title: title || 'Untitled Observation',
+            text: text,
+            tags: tags ? tags.split(',').map(t => t.trim().toLowerCase()) : [],
+            timestamp: new Date().toISOString()
+        };
+        
+        const observations = this.getObservations();
+        observations.unshift(observation);
+        this.setObservations(observations);
+        
+        // Clear form
+        if (this.titleEl) this.titleEl.value = '';
+        this.textEl.value = '';
+        if (this.tagsEl) this.tagsEl.value = '';
+        
+        this.renderObservations();
+        
+        // Show success feedback
+        const originalText = this.saveBtn.textContent;
+        this.saveBtn.textContent = 'Saved! 📝';
+        this.saveBtn.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+        setTimeout(() => {
+            this.saveBtn.textContent = originalText;
+            this.saveBtn.style.background = '';
+        }, 2000);
+    }
+    
+    getObservations() {
+        try {
+            const raw = localStorage.getItem('space_observations');
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+    
+    setObservations(observations) {
+        try {
+            localStorage.setItem('space_observations', JSON.stringify(observations));
+        } catch (e) {
+            console.warn('Could not save observations to localStorage');
+        }
+    }
+    
+    renderObservations() {
+        if (!this.listEl) return;
+        
+        const observations = this.getObservations();
+        const filter = this.filterEl ? this.filterEl.value.toLowerCase().trim() : '';
+        
+        // Filter observations by tag if filter is provided
+        const filtered = filter ? 
+            observations.filter(obs => obs.tags.some(tag => tag.includes(filter))) :
+            observations;
+        
+        this.listEl.innerHTML = '';
+        
+        if (filtered.length === 0) {
+            const emptyMsg = document.createElement('li');
+            emptyMsg.style.color = '#9ad2ff';
+            emptyMsg.style.fontStyle = 'italic';
+            emptyMsg.textContent = filter ? 'No observations match that tag.' : 'No observations saved yet.';
+            this.listEl.appendChild(emptyMsg);
+            return;
+        }
+        
+        filtered.forEach(obs => {
+            const li = document.createElement('li');
+            li.className = 'observation-item';
+            li.style.cssText = `
+                margin: 1rem 0;
+                padding: 1rem;
+                background: rgba(0, 212, 255, 0.08);
+                border-left: 3px solid #00d4ff;
+                border-radius: 8px;
+            `;
+            
+            const date = new Date(obs.timestamp).toLocaleString();
+            const tagsHtml = obs.tags.length > 0 ? 
+                `<div style="margin-top: 0.5rem;"><small style="color: #feca57;">Tags: ${obs.tags.join(', ')}</small></div>` : '';
+            
+            li.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                    <strong style="color: #00d4ff;">${this.escapeHTML(obs.title)}</strong>
+                    <small style="color: #9ad2ff;">${date}</small>
+                </div>
+                <div style="white-space: pre-wrap; color: #fff; line-height: 1.5;">${this.escapeHTML(obs.text)}</div>
+                ${tagsHtml}
+                <button onclick="observationsController.deleteObservation(${obs.id})" 
+                        style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; background: rgba(255, 107, 107, 0.2); border: 1px solid #ff6b6b; border-radius: 4px; color: #ff6b6b; cursor: pointer; font-size: 0.8rem;">
+                    Delete
+                </button>
+            `;
+            
+            this.listEl.appendChild(li);
+        });
+    }
+    
+    deleteObservation(id) {
+        if (!confirm('Are you sure you want to delete this observation?')) return;
+        
+        const observations = this.getObservations();
+        const filtered = observations.filter(obs => obs.id !== id);
+        this.setObservations(filtered);
+        this.renderObservations();
+    }
+    
+    escapeHTML(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+}
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new SatelliteTracker();
@@ -2040,6 +2219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new NASAAPODFetcher();
     new SatelliteLab(); // Add the new lab system
     new SolarSystemAPI(); // Add Solar System API integration
+    window.observationsController = new ObservationsController(); // Observations page controller
     
     // Add loading animation
     document.body.style.opacity = '0';

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Observations - Space Satellite Research Hackathon</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="floating-objects">
+        <div class="asteroid asteroid-1">🪨</div>
+        <div class="asteroid asteroid-2">☄️</div>
+        <div class="asteroid asteroid-3">🌑</div>
+        <div class="space-debris debris-1">🛸</div>
+        <div class="space-debris debris-2">🚀</div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">🛰️</span>
+                <span>Team Mama</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="satellites.html">Satellites</a></li>
+                <li><a href="lab.html">Lab</a></li>
+                <li><a href="nasa-apod.html">NASA APOD</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="observations.html" class="active">Observations</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">📝 Observations</h1>
+            <p class="page-subtitle">Record your findings, thoughts, and insights from simulations and explorations</p>
+        </div>
+    </section>
+
+    <!-- NASA Eyes Solar System -->
+    <section class="satellite-lab">
+        <div class="container">
+            <div class="odin-panel" style="margin-bottom: 1rem;">
+                <h3>🌌 NASA Eyes: Solar System Explorer</h3>
+                <p style="color: #9ad2ff; margin-bottom: 1rem;">Interactive 3D exploration of the solar system. Use this to gather observations about planets, missions, and celestial mechanics.</p>
+                <div style="position:relative;padding-top:56.25%;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;border-radius:12px;overflow:hidden;">
+                    <iframe id="eyes-iframe" src="https://eyes.nasa.gov/apps/solar-system/#/home" title="NASA Eyes: Solar System"
+                            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen
+                            referrerpolicy="no-referrer"></iframe>
+                </div>
+                <div style="margin-top:0.5rem;color:#9ad2ff;">
+                    Having trouble loading? <a href="https://eyes.nasa.gov/apps/solar-system/#/home" target="_blank" rel="noopener noreferrer">Open NASA Eyes in a new tab</a>.
+                </div>
+            </div>
+            
+            <div class="odin-grid" style="grid-template-columns: 1.2fr 1fr; gap: 1rem; align-items: start;">
+                <div class="odin-panel">
+                    <h3>Add Observation</h3>
+                    <div class="control-group">
+                        <label for="obs-title">Title (optional)</label>
+                        <input id="obs-title" type="text" placeholder="e.g., Mars transfer insights, ISS pass notes" style="width:100%;padding:0.6rem;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;border-radius:8px;color:#fff;font-family:'Exo 2',sans-serif;" />
+                    </div>
+                    <div class="control-group">
+                        <label for="obs-text">Observation</label>
+                        <textarea id="obs-text" rows="9" placeholder="Write your observation here... Include parameters, results, and conclusions." style="width:100%;padding:0.75rem;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;border-radius:8px;color:#fff;font-family:'Exo 2',sans-serif;"></textarea>
+                    </div>
+                    <div class="control-group">
+                        <label for="obs-tags">Tags (comma separated)</label>
+                        <input id="obs-tags" type="text" placeholder="e.g., orbit, delta-v, mars, signal" style="width:100%;padding:0.6rem;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;border-radius:8px;color:#fff;font-family:'Exo 2',sans-serif;" />
+                    </div>
+                    <button id="obs-save" class="btn btn-primary" type="button">Save Observation</button>
+                </div>
+
+                <div class="odin-panel">
+                    <h3>Saved Notes</h3>
+                    <div class="control-group">
+                        <label for="obs-filter">Filter by tag</label>
+                        <input id="obs-filter" type="text" placeholder="type a tag to filter..." style="width:100%;padding:0.6rem;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;border-radius:8px;color:#fff;font-family:'Exo 2',sans-serif;" />
+                    </div>
+                    <ul id="obs-list" class="odin-list"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Space Satellite Research Hackathon. Reaching for the stars.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

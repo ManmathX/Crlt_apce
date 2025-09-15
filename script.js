@@ -961,9 +961,208 @@ class SatelliteLab {
                 
                 // Show corresponding experiment
                 const experimentId = tab.getAttribute('data-experiment') + '-experiment';
-                document.getElementById(experimentId).classList.add('active');
+                const targetExperiment = document.getElementById(experimentId);
+                if (targetExperiment) {
+                    targetExperiment.classList.add('active');
+                }
             });
         });
+        
+        // Ensure lab controls are properly connected
+        this.connectLabControls();
+    }
+    
+    connectLabControls() {
+        // Connect orbit calculator controls
+        const altitudeSlider = document.getElementById('altitude-slider');
+        const altitudeValue = document.getElementById('altitude-value');
+        const massSlider = document.getElementById('mass-slider');
+        const massValue = document.getElementById('mass-value');
+        const calculateButton = document.getElementById('calculate-orbit');
+        
+        if (altitudeSlider && altitudeValue) {
+            altitudeSlider.addEventListener('input', () => {
+                altitudeValue.textContent = altitudeSlider.value;
+            });
+        }
+        
+        if (massSlider && massValue) {
+            massSlider.addEventListener('input', () => {
+                massValue.textContent = massSlider.value;
+            });
+        }
+        
+        if (calculateButton) {
+            calculateButton.addEventListener('click', () => {
+                this.calculateOrbit();
+            });
+        }
+        
+        // Connect signal simulator controls
+        const distanceSlider = document.getElementById('distance-slider');
+        const distanceValue = document.getElementById('distance-value');
+        const powerSlider = document.getElementById('power-slider');
+        const powerValue = document.getElementById('power-value');
+        const weatherSelect = document.getElementById('weather-select');
+        
+        if (distanceSlider && distanceValue) {
+            distanceSlider.addEventListener('input', () => {
+                distanceValue.textContent = distanceSlider.value;
+                this.updateSignalStrength();
+            });
+        }
+        
+        if (powerSlider && powerValue) {
+            powerSlider.addEventListener('input', () => {
+                powerValue.textContent = powerSlider.value;
+                this.updateSignalStrength();
+            });
+        }
+        
+        if (weatherSelect) {
+            weatherSelect.addEventListener('change', () => {
+                this.updateSignalStrength();
+            });
+        }
+        
+        // Connect satellite designer
+        const designButton = document.getElementById('design-satellite');
+        if (designButton) {
+            designButton.addEventListener('click', () => {
+                this.designSatellite();
+            });
+        }
+        
+        // Initialize signal strength
+        this.updateSignalStrength();
+    }
+    
+    calculateOrbit() {
+        const altitude = parseFloat(document.getElementById('altitude-slider')?.value || 400);
+        const mass = parseFloat(document.getElementById('mass-slider')?.value || 1000);
+        
+        // Earth parameters
+        const earthRadius = 6371; // km
+        const earthMass = 5.972e24; // kg
+        const G = 6.674e-11; // m³/kg/s²
+        
+        // Calculate orbital parameters
+        const orbitalRadius = (earthRadius + altitude) * 1000; // Convert to meters
+        const orbitalVelocity = Math.sqrt(G * earthMass / orbitalRadius); // m/s
+        const orbitalPeriod = 2 * Math.PI * Math.sqrt(Math.pow(orbitalRadius, 3) / (G * earthMass)); // seconds
+        const gravitationalForce = G * earthMass * mass / Math.pow(orbitalRadius, 2); // N
+        
+        // Update display
+        const velocityEl = document.getElementById('orbital-velocity');
+        const periodEl = document.getElementById('orbital-period');
+        const forceEl = document.getElementById('gravitational-force');
+        
+        if (velocityEl) velocityEl.textContent = `${(orbitalVelocity / 1000).toFixed(2)} km/s`;
+        if (periodEl) periodEl.textContent = `${(orbitalPeriod / 60).toFixed(1)} minutes`;
+        if (forceEl) forceEl.textContent = `${gravitationalForce.toFixed(0)} N`;
+    }
+    
+    updateSignalStrength() {
+        const distance = parseFloat(document.getElementById('distance-slider')?.value || 2000);
+        const power = parseFloat(document.getElementById('power-slider')?.value || 100);
+        const weather = document.getElementById('weather-select')?.value || 'clear';
+        
+        // Calculate signal strength (simplified model)
+        const baseStrength = Math.sqrt(power) / Math.sqrt(distance / 1000);
+        
+        // Weather attenuation factors
+        const weatherFactors = {
+            clear: 1.0,
+            cloudy: 0.8,
+            rain: 0.6,
+            storm: 0.3
+        };
+        
+        const signalStrength = Math.min(100, baseStrength * weatherFactors[weather] * 10);
+        
+        // Update display
+        const signalBar = document.getElementById('signal-bar');
+        const signalPercentage = document.getElementById('signal-percentage');
+        const signalQuality = document.getElementById('signal-quality');
+        
+        if (signalBar) {
+            signalBar.style.width = `${signalStrength}%`;
+            signalBar.style.backgroundColor = signalStrength > 70 ? '#4ecdc4' : 
+                                             signalStrength > 40 ? '#feca57' : '#ff6b6b';
+        }
+        
+        if (signalPercentage) signalPercentage.textContent = `${Math.round(signalStrength)}%`;
+        
+        if (signalQuality) {
+            const quality = signalStrength > 70 ? 'Excellent' :
+                           signalStrength > 40 ? 'Good' :
+                           signalStrength > 20 ? 'Poor' : 'Very Poor';
+            signalQuality.textContent = quality;
+        }
+    }
+    
+    designSatellite() {
+        const power = document.querySelector('input[name="power"]:checked')?.value;
+        const comm = document.querySelector('input[name="comm"]:checked')?.value;
+        const payload = document.querySelector('input[name="payload"]:checked')?.value;
+        
+        if (!power || !comm || !payload) {
+            alert('Please select all components before designing the mission!');
+            return;
+        }
+        
+        // Mission configuration based on selections
+        const configs = {
+            power: {
+                solar: { cost: 10, reliability: 85, power: 200 },
+                nuclear: { cost: 50, reliability: 95, power: 500 },
+                battery: { cost: 5, reliability: 70, power: 100 }
+            },
+            comm: {
+                uhf: { cost: 5, dataRate: '1 Mbps', range: 'LEO' },
+                xband: { cost: 15, dataRate: '10 Mbps', range: 'Deep Space' },
+                laser: { cost: 25, dataRate: '100 Mbps', range: 'Interplanetary' }
+            },
+            payload: {
+                camera: { cost: 20, resolution: '1m', capability: 'Imaging' },
+                radar: { cost: 30, resolution: '10m', capability: 'All-weather' },
+                spectrometer: { cost: 25, resolution: 'Spectral', capability: 'Composition' }
+            }
+        };
+        
+        const powerConfig = configs.power[power];
+        const commConfig = configs.comm[comm];
+        const payloadConfig = configs.payload[payload];
+        
+        const totalCost = powerConfig.cost + commConfig.cost + payloadConfig.cost;
+        
+        const summaryEl = document.querySelector('#mission-summary .summary-content');
+        if (summaryEl) {
+            summaryEl.innerHTML = `
+                <div class="mission-details">
+                    <h5>🚀 Mission Configuration</h5>
+                    <p><strong>Total Cost:</strong> $${totalCost}M</p>
+                    <p><strong>Power:</strong> ${powerConfig.power}W (${powerConfig.reliability}% reliable)</p>
+                    <p><strong>Communication:</strong> ${commConfig.dataRate} (${commConfig.range})</p>
+                    <p><strong>Payload:</strong> ${payloadConfig.capability} (${payloadConfig.resolution})</p>
+                    <div class="mission-recommendation">
+                        <h6>Recommended Mission:</h6>
+                        <p>${this.generateMissionRecommendation(power, comm, payload)}</p>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    generateMissionRecommendation(power, comm, payload) {
+        const missions = {
+            'solar-uhf-camera': 'Earth observation satellite for environmental monitoring',
+            'nuclear-xband-radar': 'Deep space exploration probe with all-weather imaging',
+            'battery-laser-spectrometer': 'High-precision asteroid composition analysis mission'
+        };
+        
+        const key = `${power}-${comm}-${payload}`;
+        return missions[key] || `Custom ${payload} mission with ${power} power and ${comm} communication`;
     }
     
     initializeExperiments() {

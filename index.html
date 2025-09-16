@@ -13,11 +13,11 @@
     <div class="stars"></div>
     <div class="twinkling"></div>
     <div class="floating-objects">
-        <div class="asteroid asteroid-1">🪨</div>
-        <div class="asteroid asteroid-2">☄️</div>
-        <div class="asteroid asteroid-3">🌑</div>
-        <div class="space-debris debris-1">🛸</div>
-        <div class="space-debris debris-2">🚀</div>
+        <div class="asteroid asteroid-1">●</div>
+        <div class="asteroid asteroid-2">●</div>
+        <div class="asteroid asteroid-3">●</div>
+        <div class="space-debris debris-1">▲</div>
+        <div class="space-debris debris-2">▲</div>
         <div class="nebula nebula-1"></div>
         <div class="nebula nebula-2"></div>
     </div>
@@ -26,17 +26,18 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <span class="satellite-icon">🛰️</span>
-                <span>Team Mama</span>
+                <span class="satellite-icon">◆</span>
+                <span>Team MaMa Research</span>
             </div>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">Mission</a></li>
                 <li><a href="#research">Research</a></li>
                 <li><a href="#satellites/playground">Satellites</a></li>
-                <li><a href="#satellite-lab">Lab</a></li>
-                <li><a href="observations.html">Observations</a></li>
-                <li><a href="playground.html">Playground</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="lab.html">Laboratory</a></li>
+                <li><a href="playground.html">Simulator</a></li>
+                <li><a href="concepts.html">Concepts</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
@@ -45,11 +46,11 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Space Satellite Research Hackathon</h1>
-            <p class="hero-subtitle">Exploring the cosmos through innovative satellite technology</p>
+            <h1 class="hero-title">Advanced Satellite Research Initiative</h1>
+            <p class="hero-subtitle">Pioneering next-generation satellite technologies for Earth observation and space exploration</p>
             <div class="hero-buttons">
-                <button class="btn btn-primary">Join Mission</button>
-                <button class="btn btn-secondary">Explore Data</button>
+                <button class="btn btn-primary">View Research</button>
+                <button class="btn btn-secondary">Access Lab</button>
             </div>
         </div>
         <div class="satellite-orbit">
@@ -65,17 +66,17 @@
                 <div class="mission-card card-3d">
                     <div class="card-inner">
                         <div class="card-front">
-                            <div class="card-icon">🌍</div>
+                            <div class="card-icon">◉</div>
                             <h3>Earth Observation</h3>
-                            <p>Monitor climate change, natural disasters, and environmental patterns using advanced satellite imagery and data analysis.</p>
+                            <p>Advanced monitoring systems for climate analysis, disaster response, and environmental research using high-resolution satellite imagery and machine learning algorithms.</p>
                         </div>
                         <div class="card-back">
                             <h3>Technologies</h3>
                             <ul>
-                                <li>🛰️ Hyperspectral Imaging</li>
-                                <li>🌡️ Climate Sensors</li>
-                                <li>🔍 AI Pattern Recognition</li>
-                                <li>📊 Real-time Analytics</li>
+                                <li>• Hyperspectral Imaging Systems</li>
+                                <li>• Advanced Climate Sensors</li>
+                                <li>• AI Pattern Recognition</li>
+                                <li>• Real-time Data Analytics</li>
                             </ul>
                         </div>
                     </div>
@@ -83,17 +84,17 @@
                 <div class="mission-card card-3d">
                     <div class="card-inner">
                         <div class="card-front">
-                            <div class="card-icon">📡</div>
+                            <div class="card-icon">◈</div>
                             <h3>Communication Networks</h3>
-                            <p>Develop next-generation satellite communication systems for global connectivity and emergency response.</p>
+                            <p>Development of cutting-edge satellite communication infrastructure for global connectivity, emergency response, and secure data transmission.</p>
                         </div>
                         <div class="card-back">
                             <h3>Capabilities</h3>
                             <ul>
-                                <li>🌐 Global Coverage</li>
-                                <li>⚡ Low Latency</li>
-                                <li>🔒 Quantum Encryption</li>
-                                <li>📱 5G Integration</li>
+                                <li>• Global Coverage Networks</li>
+                                <li>• Ultra-Low Latency Systems</li>
+                                <li>• Quantum Encryption Protocols</li>
+                                <li>• 5G Network Integration</li>
                             </ul>
                         </div>
                     </div>
@@ -101,17 +102,17 @@
                 <div class="mission-card card-3d">
                     <div class="card-inner">
                         <div class="card-front">
-                            <div class="card-icon">🚀</div>
+                            <div class="card-icon">◆</div>
                             <h3>Space Exploration</h3>
-                            <p>Push the boundaries of space technology to enable deep space missions and interplanetary communication.</p>
+                            <p>Advancing space technology frontiers to enable deep space missions, interplanetary communication, and scientific discovery beyond Earth's orbit.</p>
                         </div>
                         <div class="card-back">
                             <h3>Missions</h3>
                             <ul>
-                                <li>🪐 Mars Communication</li>
-                                <li>🌙 Lunar Gateway</li>
-                                <li>🛰️ Deep Space Network</li>
-                                <li>🔭 Interstellar Probes</li>
+                                <li>• Mars Communication Systems</li>
+                                <li>• Lunar Gateway Infrastructure</li>
+                                <li>• Deep Space Network Expansion</li>
+                                <li>• Interstellar Probe Technology</li>
                             </ul>
                         </div>
                     </div>
@@ -217,7 +218,7 @@
                     </div>
                 </div>
                 <div class="apod-error" style="display: none;">
-                    <div class="error-icon">🛰️</div>
+                    <div class="error-icon">⚠</div>
                     <p>Unable to connect to NASA servers. Please check your connection and try again.</p>
                     <button class="btn btn-secondary" onclick="window.nasaAPOD.fetchAPOD()">Retry</button>
                 </div>
@@ -235,15 +236,15 @@
                     <p>Join our hackathon and contribute to the future of satellite technology. Whether you're a developer, researcher, or space enthusiast, there's a place for you in our mission.</p>
                     <div class="contact-details">
                         <div class="detail-item">
-                            <span class="icon">📧</span>
+                            <span class="icon">@</span>
                             <span>hackathon@satelliteresearch.space</span>
                         </div>
                         <div class="detail-item">
-                            <span class="icon">📍</span>
+                            <span class="icon">◉</span>
                             <span>Space Research Center, Earth</span>
                         </div>
                         <div class="detail-item">
-                            <span class="icon">🌐</span>
+                            <span class="icon">⌘</span>
                             <span>www.satellitehackathon.space</span>
                         </div>
                     </div>
@@ -261,7 +262,7 @@
                             <option value="other">Other</option>
                         </select>
                         <textarea id="message" name="message" placeholder="Tell us about your interest in satellite research" aria-label="Message" rows="4"></textarea>
-                        <button type="submit" class="btn btn-primary">Launch Application</button>
+                        <button type="submit" class="btn btn-primary">Submit Application</button>
                     </form>
                 </div>
             </div>

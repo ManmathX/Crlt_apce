@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbital Mechanics Concepts - SatelliteX Research</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">◆</span>
+                <span>Team MaMa Research</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="satellites.html">Satellites</a></li>
+                <li><a href="lab.html">Lab</a></li>
+                <li><a href="observations.html">Observations</a></li>
+                <li><a href="playground.html">Playground</a></li>
+                <li><a href="concepts.html" class="active">Concepts</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero concepts-hero">
+        <div class="container">
+            <h1>Orbital Mechanics Concepts</h1>
+            <p class="hero-subtitle">Understanding the 15 Critical Elements in ODIN Trajectory Planning</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="concepts-intro">
+                <h2>Physics-Based Trajectory Planning</h2>
+                <p>ODIN's trajectory planning system relies on 15 fundamental orbital elements that determine both initial planning and subsequent replanning of satellite trajectories. Each element plays a critical role in ensuring physically valid, safe, and efficient spacecraft operations.</p>
+            </div>
+
+            <div class="elements-grid">
+                <!-- Classical Orbital Elements -->
+                <div class="element-category">
+                    <h3>Classical Orbital Elements (6)</h3>
+                    <p class="category-desc">The six Keplerian elements that uniquely define any satellite's orbit</p>
+                    
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>1. Semi-major Axis (a)</h4>
+                            <span class="element-symbol">a</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Defines the size of the orbit, determining total orbital energy needed.</p>
+                            <p><strong>Impact:</strong> Directly affects transfer times between Earth and Moon and fuel (Δv) requirements for trajectory changes.</p>
+                            <p><strong>ODIN Usage:</strong> Calculates feasible paths and optimizes orbit insertion and departure burns.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>2. Eccentricity (e)</h4>
+                            <span class="element-symbol">e</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Dictates orbit shape from circular to elliptical; more eccentric orbits have varying speeds.</p>
+                            <p><strong>Impact:</strong> Affects timing of burns and spacecraft velocity at different orbital positions.</p>
+                            <p><strong>ODIN Usage:</strong> Times burns correctly for orbital adjustments and hazard avoidance at specific orbital radii.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>3. Inclination (i)</h4>
+                            <span class="element-symbol">i</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Orbital tilt against Earth's equatorial plane, governing accessible space regions.</p>
+                            <p><strong>Impact:</strong> Changes involve high Δv costs due to plane changes.</p>
+                            <p><strong>ODIN Usage:</strong> Weighs fuel costs versus mission benefits when adjusting inclination.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>4. Longitude of Ascending Node (Ω)</h4>
+                            <span class="element-symbol">Ω</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Horizontal orientation where orbit crosses Earth's equatorial plane.</p>
+                            <p><strong>Impact:</strong> Critical for aligning spacecraft with targets or avoiding debris corridors.</p>
+                            <p><strong>ODIN Usage:</strong> Adjusts orientation to optimize rendezvous and hazard avoidance.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>5. Argument of Periapsis (ω)</h4>
+                            <span class="element-symbol">ω</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Specifies where the orbit's closest point occurs; timing maneuvers here maximizes efficiency.</p>
+                            <p><strong>Impact:</strong> Optimal burn timing for maximum efficiency.</p>
+                            <p><strong>ODIN Usage:</strong> Schedules burns and hazard avoidance maneuvers for optimal safety and fuel use.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>6. True Anomaly (ν)</h4>
+                            <span class="element-symbol">ν</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Spacecraft's exact position along orbit at any time.</p>
+                            <p><strong>Impact:</strong> Essential for real-time tracking and decision-making.</p>
+                            <p><strong>ODIN Usage:</strong> Constantly updates to monitor spacecraft status relative to hazards or trajectory goals.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Anomaly Elements -->
+                <div class="element-category">
+                    <h3>Anomaly Elements (2)</h3>
+                    <p class="category-desc">Mathematical angles for precise position calculation and orbital propagation</p>
+                    
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>7. Mean Anomaly (M)</h4>
+                            <span class="element-symbol">M</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Average position used for orbital propagation.</p>
+                            <p><strong>Impact:</strong> Enables prediction of spacecraft's future orbital location.</p>
+                            <p><strong>ODIN Usage:</strong> Predicts spacecraft's future location in orbit for replanning algorithms.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>8. Eccentric Anomaly (E)</h4>
+                            <span class="element-symbol">E</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Auxiliary mathematical angle for position calculation.</p>
+                            <p><strong>Impact:</strong> Speeds up trajectory propagation calculations.</p>
+                            <p><strong>ODIN Usage:</strong> Enables rapid updates critical for real-time trajectory planning.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic and Kinematic Elements -->
+                <div class="element-category">
+                    <h3>Dynamic & Kinematic Elements (3)</h3>
+                    <p class="category-desc">Energy and momentum considerations for physically valid maneuvers</p>
+                    
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>9. Orbital Energy</h4>
+                            <span class="element-symbol">E</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Sum of kinetic and potential energy; governs transfer feasibility.</p>
+                            <p><strong>Impact:</strong> Determines delta-v needed for maneuvering.</p>
+                            <p><strong>ODIN Usage:</strong> Prioritizes trajectories that conserve fuel while meeting time and safety requirements.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>10. Angular Momentum</h4>
+                            <span class="element-symbol">h</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Conserved in absence of external forces; affects orbit shape.</p>
+                            <p><strong>Impact:</strong> Determines how maneuvers alter trajectory.</p>
+                            <p><strong>ODIN Usage:</strong> Factors momentum conservation for realistic, physically allowable maneuvers.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>11. Flight Path Angle</h4>
+                            <span class="element-symbol">γ</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Angle of spacecraft velocity to local horizon.</p>
+                            <p><strong>Impact:</strong> Critical during burns for accurate injection or transfer phases.</p>
+                            <p><strong>ODIN Usage:</strong> Calculates and controls for safe and efficient trajectory transfers.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Relative Motion Elements -->
+                <div class="element-category">
+                    <h3>Relative Motion Elements (1)</h3>
+                    <p class="category-desc">Velocity relationships for collision avoidance and rendezvous</p>
+                    
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>12. Relative Velocity Vectors</h4>
+                            <span class="element-symbol">v⃗ᵣₑₗ</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Velocity difference relative to targets, hazards, or debris.</p>
+                            <p><strong>Impact:</strong> Essential for collision avoidance and rendezvous planning.</p>
+                            <p><strong>ODIN Usage:</strong> Analyzes continuously to trigger real-time replanning if threats detected.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environmental and Temporal Elements -->
+                <div class="element-category">
+                    <h3>Environmental & Temporal Elements (3)</h3>
+                    <p class="category-desc">External factors affecting orbital mechanics and mission planning</p>
+                    
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>13. Orbital Plane Orientation/Rotation</h4>
+                            <span class="element-symbol">Ω̇</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Spatial direction of the orbit and its rotation rate.</p>
+                            <p><strong>Impact:</strong> Adjustments can avoid hazardous space weather or debris clusters.</p>
+                            <p><strong>ODIN Usage:</strong> Evaluates plane orientation shifts to minimize exposure risks while considering fuel penalties.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>14. Perigee/Apogee Altitude</h4>
+                            <span class="element-symbol">rₚ/rₐ</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Closest and farthest orbit points relative to Earth.</p>
+                            <p><strong>Impact:</strong> Governs interaction with environmental hazards like radiation belts or debris fields.</p>
+                            <p><strong>ODIN Usage:</strong> Plans altitude adjustments to avoid hazardous zones or optimize mission profiles.</p>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-header">
+                            <h4>15. Epoch/Time Stamp</h4>
+                            <span class="element-symbol">t₀</span>
+                        </div>
+                        <div class="element-content">
+                            <p><strong>Definition:</strong> Reference time for all orbital parameters and state vectors.</p>
+                            <p><strong>Impact:</strong> Ensures synchronization of physical models with real-time data.</p>
+                            <p><strong>ODIN Usage:</strong> Enables accurate forward propagation and validation against current environmental conditions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physics Validation Section -->
+            <div class="physics-validation">
+                <h2>Physics Validation in ODIN Path Selection</h2>
+                <p class="validation-intro">Every trajectory generated by ODIN undergoes rigorous physics-based validation to ensure feasibility, safety, and efficiency.</p>
+
+                <div class="validation-grid">
+                    <div class="validation-step">
+                        <div class="step-number">1</div>
+                        <h4>Trajectory Simulation</h4>
+                        <p>Every candidate path is simulated using Newton's equations of motion and gravity, solved numerically to ensure the spacecraft's predicted position and velocity are physically possible given current mass, thrust, and momentum.</p>
+                    </div>
+
+                    <div class="validation-step">
+                        <div class="step-number">2</div>
+                        <h4>Fuel and Thrust Constraints</h4>
+                        <p>Physics-based checks use the rocket equation, guaranteeing maneuvers can be executed without exceeding fuel or propulsion limits. All Δv requirements are validated against available resources.</p>
+                    </div>
+
+                    <div class="validation-step">
+                        <div class="step-number">3</div>
+                        <h4>Collision and Hazard Checking</h4>
+                        <p>For each new path, physics-driven algorithms calculate probability of impact with debris and exposures to radiation zones using real-time models. Infeasible or unsafe paths are immediately discarded.</p>
+                    </div>
+
+                    <div class="validation-step">
+                        <div class="step-number">4</div>
+                        <h4>Dynamic Constraint Verification</h4>
+                        <p>Optimized trajectories are validated by simulating forward propagation. Paths must maintain conservation laws (momentum, energy) and respect planetary gravitational fields for proper transfer orbits.</p>
+                    </div>
+
+                    <div class="validation-step">
+                        <div class="step-number">5</div>
+                        <h4>Experimental and Numerical Validation</h4>
+                        <p>Solutions are cross-checked with other numerical tools and simulation models. Advanced AI systems use physics-informed neural networks trained to generate only physically-valid solutions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Physics Principles -->
+            <div class="physics-principles">
+                <h2>Fundamental Physics Principles</h2>
+                <div class="principles-grid">
+                    <div class="principle-card">
+                        <h4>Kepler's Laws</h4>
+                        <p>Govern planetary motion and orbital mechanics, ensuring all trajectories follow natural celestial mechanics rather than arbitrary paths.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4>Newton's Laws</h4>
+                        <p>Define how forces affect motion, ensuring all proposed maneuvers respect fundamental physics of acceleration and momentum.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4>Conservation Laws</h4>
+                        <p>Energy and momentum conservation ensure all trajectory changes are physically realizable and maintain orbital stability.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4>Rocket Equation</h4>
+                        <p>Tsiolkovsky's equation validates that all Δv requirements can be met with available fuel mass and propulsion systems.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4>Perturbation Theory</h4>
+                        <p>Accounts for real-world forces like atmospheric drag, solar pressure, and gravitational perturbations in trajectory planning.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4>Orbital Mechanics</h4>
+                        <p>Six orbital elements uniquely define any orbit, providing the mathematical framework for both planning and replanning.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <style>
+        .concepts-hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .concepts-hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #b8c6db;
+            font-weight: 300;
+        }
+
+        .concepts-intro {
+            text-align: center;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .concepts-intro h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            color: #4a90e2;
+            margin-bottom: 1.5rem;
+        }
+
+        .concepts-intro p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e8e8e8;
+        }
+
+        .elements-grid {
+            display: grid;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .element-category {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .element-category h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            color: #4a90e2;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-desc {
+            color: #b8c6db;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .element-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .element-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(74, 144, 226, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .element-header h4 {
+            font-family: 'Orbitron', monospace;
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .element-symbol {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: #4a90e2;
+            background: rgba(74, 144, 226, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+            min-width: 3rem;
+            text-align: center;
+        }
+
+        .element-content p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            color: #e8e8e8;
+        }
+
+        .element-content strong {
+            color: #4a90e2;
+        }
+
+        .physics-validation {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            margin-bottom: 4rem;
+        }
+
+        .physics-validation h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .validation-intro {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #e8e8e8;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .validation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .validation-step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: linear-gradient(45deg, #4a90e2, #2c5aa0);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .validation-step h4 {
+            font-family: 'Orbitron', monospace;
+            color: #4a90e2;
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .validation-step p {
+            color: #e8e8e8;
+            line-height: 1.6;
+        }
+
+        .physics-principles {
+            margin-bottom: 4rem;
+        }
+
+        .physics-principles h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .principle-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(74, 144, 226, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .principle-card h4 {
+            font-family: 'Orbitron', monospace;
+            color: #4a90e2;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .principle-card p {
+            color: #e8e8e8;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .concepts-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .validation-grid,
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .element-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</body>
+</html>

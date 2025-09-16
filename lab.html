@@ -11,11 +11,11 @@
     <div class="stars"></div>
     <div class="twinkling"></div>
     <div class="floating-objects">
-        <div class="asteroid asteroid-1">🪨</div>
-        <div class="asteroid asteroid-2">☄️</div>
-        <div class="asteroid asteroid-3">🌑</div>
-        <div class="space-debris debris-1">🛸</div>
-        <div class="space-debris debris-2">🚀</div>
+        <div class="asteroid asteroid-1">●</div>
+        <div class="asteroid asteroid-2">●</div>
+        <div class="asteroid asteroid-3">●</div>
+        <div class="space-debris debris-1">▲</div>
+        <div class="space-debris debris-2">▲</div>
         <div class="nebula nebula-1"></div>
         <div class="nebula nebula-2"></div>
     </div>
@@ -24,8 +24,8 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <span class="satellite-icon">🛰️</span>
-                <span>Team Mama</span>
+                <span class="satellite-icon">◆</span>
+                <span>Team MaMa Research</span>
             </div>
             <ul class="nav-menu">
                 <li><a href="home.html">Home</a></li>
@@ -34,8 +34,9 @@
                 <li><a href="satellites.html">Satellites</a></li>
                 <li><a href="lab.html" class="active">Lab</a></li>
                 <li><a href="observations.html">Observations</a></li>
-                <li><a href="playground.html">Playground</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <a href="playground.html">Simulator</a>
+                <a href="concepts.html">Concepts</a>
+                <a href="contact.html">Contact</a>
             </ul>
         </div>
     </nav>
@@ -43,7 +44,7 @@
     <!-- Lab Header -->
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">🧪 Satellite Research Lab</h1>
+            <h1 class="page-title">Satellite Research Laboratory</h1>
             <p class="page-subtitle">Interactive experiments and simulations for satellite research</p>
         </div>
     </section>
@@ -52,10 +53,11 @@
     <section id="satellite-lab" class="satellite-lab">
         <div class="container">
             <div class="lab-navigation">
-                <button class="lab-tab active" data-experiment="orbit">🌍 Orbit Calculator</button>
-                <button class="lab-tab" data-experiment="signal">📡 Signal Simulator</button>
-                <button class="lab-tab" data-experiment="designer">🛰️ Satellite Designer</button>
-                <button class="lab-tab" data-experiment="odin">🧠 Digital Twin (ODIN)</button>
+                <button class="lab-tab" data-experiment="orbit">Orbit Calculator</button>
+                <button class="lab-tab" data-experiment="signal">Signal Simulator</button>
+                <button class="lab-tab" data-experiment="designer">Satellite Designer</button>
+                <button class="lab-tab" data-experiment="odin">Digital Twin (ODIN)</button>
+                <button class="lab-tab" data-experiment="formula">Formula Calculator</button>
             </div>
             
             <div class="lab-content">
@@ -162,6 +164,415 @@
                     </div>
                 </div>
 
+                <!-- Formula Calculator Experiment -->
+                <div class="lab-experiment" id="formulas-experiment">
+                    <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <style>
+                            /* Orbital Calculator Styles */
+                            .formula-calc {--bg:#0f1724;--card:#111827;--muted:#9ca3af;--accent:#60a5fa}
+                            .formula-calc .wrap{max-width:980px;margin:28px auto;padding:20px}
+                            .formula-calc h1{font-size:20px;margin:0 0 10px}
+                            .formula-calc .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+                            .formula-calc .card{background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+                            .formula-calc label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+                            .formula-calc input,.formula-calc select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+                            .formula-calc .row{display:flex;gap:12px}
+                            .formula-calc .row > *{flex:1}
+                            .formula-calc button{background:linear-gradient(90deg,var(--accent),#3b82f6);border:none;padding:10px 12px;border-radius:10px;color:#072b4a;font-weight:600;cursor:pointer}
+                            .formula-calc .result{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;font-family:monospace;white-space:pre-wrap}
+                            .formula-calc small{color:var(--muted)}
+                            .formula-calc .full{grid-column:1/-1}
+                            .formula-calc .example{margin-top:8px;font-size:13px;color:var(--muted)}
+                        </style>
+                        
+                        <div class="formula-calc">
+                            <div class="wrap">
+                                <h1>Orbital Calculator — Basic formulas</h1>
+                                <p class="example">Units must be consistent. Default sample values use <strong>kilometres (km)</strong> and <strong>seconds (s)</strong> unless changed.</p>
+
+                                <div class="grid">
+                                    <div class="card">
+                                        <h3>Gravitational parameter (μ = GM)</h3>
+                                        <label>μ (mu)</label>
+                                        <input id="mu" type="number" value="398600.4418" step="any" />
+                                        <small>Earth μ = 398600.4418 km³/s² (example)</small>
+
+                                        <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+                                        <h3>Orbital elements / state</h3>
+                                        <label>Semi-major axis (a)</label>
+                                        <input id="a" type="number" value="7000" step="any" />
+                                        <label>Eccentricity (e)</label>
+                                        <input id="e" type="number" value="0.001" step="any" />
+                                        <label>Current radius (r)</label>
+                                        <input id="r" type="number" value="7000" step="any" />
+
+                                        <label style="margin-top:8px">Radial velocity (v<sub>r</sub>)</label>
+                                        <input id="vr" type="number" value="0" step="any" />
+                                        <label>Tangential velocity (v<sub>θ</sub>)</label>
+                                        <input id="vtheta" type="number" value="7.5" step="any" />
+
+                                        <div style="margin-top:10px" class="row">
+                                            <button onclick="computeOrbit()">Compute orbit</button>
+                                            <button onclick="fillCircular()">Fill circular sample</button>
+                                        </div>
+
+                                        <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+                                        <h3>Perturbation Forces (RTN)</h3>
+                                        <label>Radial force R (N)</label>
+                                        <input id="force_r" type="number" value="0.1" step="any" />
+                                        <label>Transverse force T (N)</label>
+                                        <input id="force_t" type="number" value="0.05" step="any" />
+                                        <label>Normal force N (N)</label>
+                                        <input id="force_n" type="number" value="0" step="any" />
+                                        <label>Spacecraft mass (kg)</label>
+                                        <input id="sc_mass" type="number" value="1000" step="any" />
+
+                                        <div style="margin-top:10px" class="row">
+                                            <button onclick="computePerturbations()">Compute effects</button>
+                                            <button onclick="fillPerturbationSample()">Sample</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <h3>Transfers & Δv</h3>
+                                        <label>Departure radius r₁</label>
+                                        <input id="r1" type="number" value="6678" step="any" />
+                                        <label>Target radius r₂</label>
+                                        <input id="r2" type="number" value="42164" step="any" />
+                                        <div style="margin-top:10px" class="row">
+                                            <button onclick="computeHohmann()">Hohmann Δv</button>
+                                            <button onclick="clearResults()">Clear</button>
+                                        </div>
+
+                                        <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+                                        <h3>Rocket equation</h3>
+                                        <label>Exhaust velocity vₑ</label>
+                                        <input id="ve" type="number" value="4500" step="any" />
+                                        <label>Initial mass mᵢ</label>
+                                        <input id="mi" type="number" value="5000" step="any" />
+                                        <label>Final mass m_f</label>
+                                        <input id="mf" type="number" value="2500" step="any" />
+                                        <div style="margin-top:10px" class="row">
+                                            <button onclick="computeRocket()">Compute Δv</button>
+                                            <button onclick="fillRocketSample()">Sample</button>
+                                        </div>
+
+                                        <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+                                        <h3>Radiation Dose</h3>
+                                        <label>Energy per particle (MeV)</label>
+                                        <input id="energy_mev" type="number" value="10" step="any" />
+                                        <label>Flux Φ (particles/cm²/s)</label>
+                                        <input id="flux" type="number" value="1000" step="any" />
+                                        <label>Area A (cm²)</label>
+                                        <input id="area" type="number" value="100" step="any" />
+                                        <label>Time t (s)</label>
+                                        <input id="time" type="number" value="3600" step="any" />
+                                        <label>Mass m (kg)</label>
+                                        <input id="mass_rad" type="number" value="70" step="any" />
+                                        <label>Radiation weighting factor wᵣ</label>
+                                        <input id="wr" type="number" value="1" step="any" />
+                                        <small>wᵣ: electrons/gamma ≈1, protons ≈2, alpha ≈20</small>
+                                        <div style="margin-top:10px" class="row">
+                                            <button onclick="computeRadiation()">Compute Dose</button>
+                                            <button onclick="fillRadiationSample()">Sample</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="card full">
+                                        <h3>Results</h3>
+                                        <div id="old-results" class="result">No results yet. Click a compute button.</div>
+                                    </div>
+                                </div>
+
+                                <footer style="margin-top:14px;color:var(--muted);font-size:13px">Made for quick prototyping — tell me which extra formulas or UI you want (e.g., plotting, RTN perturbations, relative velocity vector).</footer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formula Calculator Experiment -->
+                <div class="lab-experiment" id="formula-experiment">
+                    <h3>Advanced Formula Calculator</h3>
+                    <p>Comprehensive orbital mechanics and radiation dose calculations for satellite mission planning.</p>
+                    
+                    <div class="formula-content">
+                        <div class="formula-section">
+                            <h4>Orbital Mechanics</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Gravitational Parameter μ (km³/s²):</label>
+                                    <input type="number" id="mu" value="398600" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Semi-major Axis a (km):</label>
+                                    <input type="number" id="a" value="7000" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Eccentricity e:</label>
+                                    <input type="number" id="e" value="0" step="any" min="0" max="0.99">
+                                </div>
+                                <div class="input-group">
+                                    <label>Current Radius r (km):</label>
+                                    <input type="number" id="r" value="7000" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Radial Velocity vᵣ (km/s):</label>
+                                    <input type="number" id="vr" value="0" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Tangential Velocity vθ (km/s):</label>
+                                    <input type="number" id="vtheta" value="7.546" step="any">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computeOrbit()" class="btn btn-primary">Compute Orbit</button>
+                                <button onclick="fillCircular()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Hohmann Transfer</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Initial Radius r₁ (km):</label>
+                                    <input type="number" id="r1" value="6678" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Final Radius r₂ (km):</label>
+                                    <input type="number" id="r2" value="42164" step="any">
+                                </div>
+                            </div>
+                            <button onclick="computeHohmann()" class="btn btn-primary">Compute Transfer</button>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Rocket Equation</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Exhaust Velocity vₑ (m/s):</label>
+                                    <input type="number" id="ve" value="4500" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Initial Mass mᵢ (kg):</label>
+                                    <input type="number" id="mi" value="5000" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Final Mass mf (kg):</label>
+                                    <input type="number" id="mf" value="2500" step="any">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computeRocket()" class="btn btn-primary">Compute Δv</button>
+                                <button onclick="fillRocketSample()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Radiation Dose Calculator</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Energy per Particle (MeV):</label>
+                                    <input type="number" id="energy_mev" value="10" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Flux (particles/cm²/s):</label>
+                                    <input type="number" id="flux" value="1000" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Area (cm²):</label>
+                                    <input type="number" id="area" value="100" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Time (s):</label>
+                                    <input type="number" id="time" value="3600" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Mass (kg):</label>
+                                    <input type="number" id="mass_rad" value="70" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Radiation Weighting Factor wᵣ:</label>
+                                    <input type="number" id="wr" value="1" step="any">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computeRadiation()" class="btn btn-primary">Compute Dose</button>
+                                <button onclick="fillRadiationSample()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Perturbation Forces (RTN Frame)</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Radial Force R (N):</label>
+                                    <input type="number" id="force_r" value="0.1" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Transverse Force T (N):</label>
+                                    <input type="number" id="force_t" value="0.05" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Normal Force N (N):</label>
+                                    <input type="number" id="force_n" value="0" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Spacecraft Mass (kg):</label>
+                                    <input type="number" id="sc_mass" value="1000" step="any">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computePerturbations()" class="btn btn-primary">Compute Effects</button>
+                                <button onclick="fillPerturbationSample()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Attitude & Control</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Position Vector r (m):</label>
+                                    <input type="number" id="pos_x" value="1" step="any" placeholder="x-component">
+                                    <input type="number" id="pos_y" value="0" step="any" placeholder="y-component">
+                                    <input type="number" id="pos_z" value="0" step="any" placeholder="z-component">
+                                </div>
+                                <div class="input-group">
+                                    <label>Force Vector F (N):</label>
+                                    <input type="number" id="force_x" value="0" step="any" placeholder="x-component">
+                                    <input type="number" id="force_y" value="10" step="any" placeholder="y-component">
+                                    <input type="number" id="force_z" value="0" step="any" placeholder="z-component">
+                                </div>
+                                <div class="input-group">
+                                    <label>Angular Velocity ω (rad/s):</label>
+                                    <input type="number" id="omega_x" value="0.1" step="any" placeholder="ωₓ">
+                                    <input type="number" id="omega_y" value="0" step="any" placeholder="ωᵧ">
+                                    <input type="number" id="omega_z" value="0" step="any" placeholder="ωᵤ">
+                                </div>
+                                <div class="input-group">
+                                    <label>Moment of Inertia I (kg·m²):</label>
+                                    <input type="number" id="inertia_xx" value="100" step="any" placeholder="Iₓₓ">
+                                    <input type="number" id="inertia_yy" value="150" step="any" placeholder="Iᵧᵧ">
+                                    <input type="number" id="inertia_zz" value="200" step="any" placeholder="Iᵤᵤ">
+                                </div>
+                                <div class="input-group">
+                                    <label>Angular Acceleration ω̇ (rad/s²):</label>
+                                    <input type="number" id="alpha_x" value="0" step="any" placeholder="ω̇ₓ">
+                                    <input type="number" id="alpha_y" value="0" step="any" placeholder="ω̇ᵧ">
+                                    <input type="number" id="alpha_z" value="0" step="any" placeholder="ω̇ᵤ">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computeAttitude()" class="btn btn-primary">Compute Attitude</button>
+                                <button onclick="fillAttitudeSample()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Safety & Hazard Assessment</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Radiation Flux Φ(E) (particles/cm²/s):</label>
+                                    <input type="number" id="flux_low" value="100" step="any" placeholder="Low energy">
+                                    <input type="number" id="flux_med" value="500" step="any" placeholder="Medium energy">
+                                    <input type="number" id="flux_high" value="50" step="any" placeholder="High energy">
+                                </div>
+                                <div class="input-group">
+                                    <label>Stopping Power S(E) (MeV·cm²/g):</label>
+                                    <input type="number" id="stop_low" value="2.0" step="any" placeholder="Low energy">
+                                    <input type="number" id="stop_med" value="5.0" step="any" placeholder="Medium energy">
+                                    <input type="number" id="stop_high" value="10.0" step="any" placeholder="High energy">
+                                </div>
+                                <div class="input-group">
+                                    <label>Energy Bins (MeV):</label>
+                                    <input type="number" id="energy_low" value="1" step="any" placeholder="Low energy">
+                                    <input type="number" id="energy_med" value="10" step="any" placeholder="Medium energy">
+                                    <input type="number" id="energy_high" value="100" step="any" placeholder="High energy">
+                                </div>
+                                <div class="input-group">
+                                    <label>Geomagnetic Index Kp:</label>
+                                    <input type="number" id="kp_index" value="5" step="any" min="0" max="9">
+                                </div>
+                                <div class="input-group">
+                                    <label>Spacecraft Position (km):</label>
+                                    <input type="number" id="sc_pos_x" value="7000" step="any" placeholder="x-component">
+                                    <input type="number" id="sc_pos_y" value="0" step="any" placeholder="y-component">
+                                    <input type="number" id="sc_pos_z" value="0" step="any" placeholder="z-component">
+                                </div>
+                                <div class="input-group">
+                                    <label>Object Position (km):</label>
+                                    <input type="number" id="obj_pos_x" value="7001" step="any" placeholder="x-component">
+                                    <input type="number" id="obj_pos_y" value="0.5" step="any" placeholder="y-component">
+                                    <input type="number" id="obj_pos_z" value="0.2" step="any" placeholder="z-component">
+                                </div>
+                                <div class="input-group">
+                                    <label>Time to Closest Approach (s):</label>
+                                    <input type="number" id="time_closest" value="3600" step="any">
+                                </div>
+                                <div class="input-group">
+                                    <label>Material Density (g/cm³):</label>
+                                    <input type="number" id="material_density" value="2.7" step="any">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computeSafety()" class="btn btn-primary">Compute Safety</button>
+                                <button onclick="fillSafetySample()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="formula-section">
+                            <h4>Mission Scoring & Optimization</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Mission Parameters:</label>
+                                    <input type="number" id="delta_v" value="500" step="any" placeholder="Δv (m/s)">
+                                    <input type="number" id="mission_time" value="86400" step="any" placeholder="Time T (s)">
+                                    <input type="number" id="fuel_available" value="1000" step="any" placeholder="Fuel (kg)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Scoring Weights:</label>
+                                    <input type="number" id="weight_dv" value="0.4" step="any" min="0" max="1" placeholder="w_Δv">
+                                    <input type="number" id="weight_time" value="0.3" step="any" min="0" max="1" placeholder="w_t">
+                                    <input type="number" id="weight_risk" value="0.3" step="any" min="0" max="1" placeholder="w_r">
+                                </div>
+                                <div class="input-group">
+                                    <label>Risk Components:</label>
+                                    <input type="number" id="dose_msv" value="10" step="any" placeholder="Dose D (mSv)">
+                                    <input type="number" id="collision_prob" value="0.001" step="any" placeholder="P_c">
+                                    <input type="number" id="attitude_penalty" value="5" step="any" placeholder="Penalty Q">
+                                </div>
+                                <div class="input-group">
+                                    <label>Risk Scaling Factors:</label>
+                                    <input type="number" id="alpha_dose" value="0.1" step="any" placeholder="α (dose)">
+                                    <input type="number" id="beta_collision" value="1000" step="any" placeholder="β (collision)">
+                                    <input type="number" id="gamma_penalty" value="0.2" step="any" placeholder="γ (penalty)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Replanning Thresholds:</label>
+                                    <input type="number" id="dose_limit" value="50" step="any" placeholder="D_limit (mSv)">
+                                    <input type="number" id="prob_threshold" value="0.01" step="any" placeholder="P_threshold">
+                                    <input type="number" id="fuel_requirement" value="800" step="any" placeholder="Fuel req (kg)">
+                                </div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="computeScoring()" class="btn btn-primary">Compute Score</button>
+                                <button onclick="fillScoringSample()" class="btn btn-secondary">Sample Data</button>
+                            </div>
+                        </div>
+
+                        <div class="results-section">
+                            <h4>Results</h4>
+                            <div class="results-display">
+                                <pre id="results">No results yet. Click a compute button to see calculations.</pre>
+                            </div>
+                            <button onclick="clearResults()" class="btn btn-secondary">Clear Results</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Digital Twin (ODIN) Experiment -->
                 <div class="lab-experiment" id="odin-experiment">
                     <h3>ODIN Digital Twin Simulator</h3>
@@ -201,5 +612,903 @@
     </footer>
 
     <script src="script.js"></script>
+    
+    <style>
+        /* Formula Calculator Styles */
+        .formula-content {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .formula-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .formula-section h4 {
+            color: #4a90e2;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: #e8e8e8;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 5px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .results-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .results-section h4 {
+            color: #4a90e2;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .results-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(74, 144, 226, 0.1);
+        }
+
+        .results-display pre {
+            color: #e8e8e8;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+
+        /* Lab Navigation */
+        .lab-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .lab-tab {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 25px;
+            color: #e8e8e8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .lab-tab:hover {
+            background: rgba(74, 144, 226, 0.1);
+            border-color: #4a90e2;
+        }
+
+        .lab-tab.active {
+            background: linear-gradient(45deg, #4a90e2, #2c5aa0);
+            border-color: #4a90e2;
+            color: white;
+        }
+
+        .lab-experiment {
+            display: none;
+        }
+
+        .lab-experiment.active {
+            display: block;
+        }
+    </style>
+    
+    <script>
+        // Lab Tab Switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.lab-tab');
+            const experiments = document.querySelectorAll('.lab-experiment');
+            
+            // Set first tab as active by default
+            if (tabs.length > 0) {
+                tabs[0].classList.add('active');
+                const firstExperiment = document.getElementById(tabs[0].getAttribute('data-experiment') + '-experiment');
+                if (firstExperiment) {
+                    firstExperiment.classList.add('active');
+                }
+            }
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and experiments
+                    tabs.forEach(t => t.classList.remove('active'));
+                    experiments.forEach(e => e.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding experiment
+                    const experimentId = this.getAttribute('data-experiment') + '-experiment';
+                    const experiment = document.getElementById(experimentId);
+                    if (experiment) {
+                        experiment.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Orbital Calculator Functions
+        function fmt(x, n=6){ if(!isFinite(x)) return String(x); return Number(x).toLocaleString(undefined,{maximumFractionDigits:n}) }
+
+        function getVal(id){ return parseFloat(document.getElementById(id).value) }
+
+        function clearResults(){ document.getElementById('results').textContent = 'Cleared.' }
+
+        function fillCircular(){ // simple circular orbit consistent values
+            document.getElementById('a').value = 7000
+            document.getElementById('e').value = 0
+            document.getElementById('r').value = 7000
+            // circular velocity v = sqrt(mu/r)
+            const mu = getVal('mu')
+            document.getElementById('vtheta').value = Math.sqrt(mu / 7000)
+            document.getElementById('vr').value = 0
+            document.getElementById('r1').value = 6678
+            document.getElementById('r2').value = 42164
+        }
+
+        function fillRocketSample(){ document.getElementById('ve').value = 4500; document.getElementById('mi').value = 5000; document.getElementById('mf').value = 2500 }
+
+        function fillRadiationSample(){ 
+            document.getElementById('energy_mev').value = 10
+            document.getElementById('flux').value = 1000
+            document.getElementById('area').value = 100
+            document.getElementById('time').value = 3600
+            document.getElementById('mass_rad').value = 70
+            document.getElementById('wr').value = 1
+        }
+
+        function fillPerturbationSample(){
+            document.getElementById('force_r').value = 0.1
+            document.getElementById('force_t').value = 0.05
+            document.getElementById('force_n').value = 0
+            document.getElementById('sc_mass').value = 1000
+        }
+
+        function fillAttitudeSample(){
+            document.getElementById('pos_x').value = 1
+            document.getElementById('pos_y').value = 0
+            document.getElementById('pos_z').value = 0
+            document.getElementById('force_x').value = 0
+            document.getElementById('force_y').value = 10
+            document.getElementById('force_z').value = 0
+            document.getElementById('omega_x').value = 0.1
+            document.getElementById('omega_y').value = 0
+            document.getElementById('omega_z').value = 0
+            document.getElementById('inertia_xx').value = 100
+            document.getElementById('inertia_yy').value = 150
+            document.getElementById('inertia_zz').value = 200
+            document.getElementById('alpha_x').value = 0
+            document.getElementById('alpha_y').value = 0
+            document.getElementById('alpha_z').value = 0
+        }
+
+        function fillSafetySample(){
+            document.getElementById('flux_low').value = 100
+            document.getElementById('flux_med').value = 500
+            document.getElementById('flux_high').value = 50
+            document.getElementById('stop_low').value = 2.0
+            document.getElementById('stop_med').value = 5.0
+            document.getElementById('stop_high').value = 10.0
+            document.getElementById('energy_low').value = 1
+            document.getElementById('energy_med').value = 10
+            document.getElementById('energy_high').value = 100
+            document.getElementById('kp_index').value = 5
+            document.getElementById('sc_pos_x').value = 7000
+            document.getElementById('sc_pos_y').value = 0
+            document.getElementById('sc_pos_z').value = 0
+            document.getElementById('obj_pos_x').value = 7001
+            document.getElementById('obj_pos_y').value = 0.5
+            document.getElementById('obj_pos_z').value = 0.2
+            document.getElementById('time_closest').value = 3600
+            document.getElementById('material_density').value = 2.7
+        }
+
+        function fillScoringSample(){
+            document.getElementById('delta_v').value = 500
+            document.getElementById('mission_time').value = 86400
+            document.getElementById('fuel_available').value = 1000
+            document.getElementById('weight_dv').value = 0.4
+            document.getElementById('weight_time').value = 0.3
+            document.getElementById('weight_risk').value = 0.3
+            document.getElementById('dose_msv').value = 10
+            document.getElementById('collision_prob').value = 0.001
+            document.getElementById('attitude_penalty').value = 5
+            document.getElementById('alpha_dose').value = 0.1
+            document.getElementById('beta_collision').value = 1000
+            document.getElementById('gamma_penalty').value = 0.2
+            document.getElementById('dose_limit').value = 50
+            document.getElementById('prob_threshold').value = 0.01
+            document.getElementById('fuel_requirement').value = 800
+        }
+
+        // Main compute: orbital energy, vis-viva velocity (from a and r), actual velocity, angular momentum, flight-path angle, perigee/apogee, period
+        function computeOrbit(){
+            const mu = getVal('mu')
+            const a = getVal('a')
+            const e = getVal('e')
+            const r = getVal('r')
+            const vr = getVal('vr')
+            const vtheta = getVal('vtheta')
+            const v = Math.hypot(vr, vtheta)
+
+            // Vis-viva predicted speed
+            let v_visviva = null
+            if(isFinite(mu) && isFinite(a) && isFinite(r) && a !== 0){ v_visviva = Math.sqrt(mu * (2/r - 1/a)) }
+
+            // Specific orbital energy
+            const energy = v*v/2 - mu / r
+
+            // Specific angular momentum (magnitude) for planar: h = r * v_theta
+            const h = r * vtheta
+
+            // Flight path (gamma) = atan2(vr, v_theta)
+            const gamma = Math.atan2(vr, vtheta) // radians
+
+            // Perigee/apogee
+            let rp = null, ra = null
+            if(isFinite(a) && isFinite(e)){
+                rp = a * (1 - e)
+                ra = a * (1 + e)
+            }
+
+            // Mean motion & period (if a>0)
+            let period = null
+            if(a > 0){ period = 2 * Math.PI * Math.sqrt(Math.abs(a*a*a / mu)) }
+
+            // Prepare output
+            let out = ''
+            out += `Input summary:\n μ = ${fmt(mu)}  |  a = ${fmt(a)}  |  e = ${fmt(e)}  |  r = ${fmt(r)}\n\n`
+            out += `Velocities:\n v_radial = ${fmt(vr)}  v_tangential = ${fmt(vtheta)}  total v = ${fmt(v)}\n`
+            if(v_visviva !== null) out += `Vis‑Viva (predicted) v = ${fmt(v_visviva)}\n`
+            out += `\nEnergy & momentum:\n Specific orbital energy (ε) = ${fmt(energy)}\n Specific angular momentum (h) = ${fmt(h)}\n Flight path angle γ = ${fmt(gamma,5)} rad = ${fmt(gamma*180/Math.PI,5)}°\n\n`
+            if(rp !== null){ out += `Perigee r_p = ${fmt(rp)}  |  Apogee r_a = ${fmt(ra)}\n` }
+            if(period !== null){ out += `Orbital period T = ${fmt(period)} s (if a>0)\n` }
+
+            out += `\nNotes:\n - Ensure units of μ, a, r are consistent (e.g. km & km³/s²).\n - h above is the specific angular momentum (distance*velocity). For full vector h⃗ use position×velocity.\n`
+
+            document.getElementById('results').textContent = out
+        }
+
+        // Hohmann transfer Δv calculations (assumes circular starting/ending radii r1,r2)
+        function computeHohmann(){
+            const mu = getVal('mu')
+            const r1 = getVal('r1')
+            const r2 = getVal('r2')
+            if(!(r1>0 && r2>0 && mu>0)){ document.getElementById('results').textContent = 'Enter positive μ, r1 and r2.'; return }
+
+            const v1 = Math.sqrt(mu / r1)
+            const v2 = Math.sqrt(mu / r2)
+            const a_transfer = (r1 + r2) / 2
+            const v_perigee_trans = Math.sqrt(mu * (2/r1 - 1/a_transfer))
+            const v_apogee_trans = Math.sqrt(mu * (2/r2 - 1/a_transfer))
+
+            const dv1 = v_perigee_trans - v1
+            const dv2 = v2 - v_apogee_trans
+            const total = Math.abs(dv1) + Math.abs(dv2)
+
+            let out = ''
+            out += `Hohmann transfer (circular ⇄ circular)\n r1 = ${fmt(r1)}  r2 = ${fmt(r2)}  μ = ${fmt(mu)}\n\n`
+            out += `Circular velocities:\n v_c1 = ${fmt(v1)}  (at r1)\n v_c2 = ${fmt(v2)}  (at r2)\n\n`
+            out += `Transfer ellipse:\n a_transfer = ${fmt(a_transfer)}\n v_at_perigee_of_transfer = ${fmt(v_perigee_trans)}\n v_at_apogee_of_transfer = ${fmt(v_apogee_trans)}\n\n`
+            out += `Δv maneuvers:\n Δv1 = ${fmt(dv1)}\n Δv2 = ${fmt(dv2)}\n Total Δv = ${fmt(total)}\n`
+
+            document.getElementById('results').textContent = out
+        }
+
+        // Rocket equation
+        function computeRocket(){
+            const ve = getVal('ve')
+            const mi = getVal('mi')
+            const mf = getVal('mf')
+            if(!(ve>0 && mi>0 && mf>0 && mi>mf)){
+                document.getElementById('results').textContent = 'Enter v_e>0 and masses mi>mf>0 (initial mass larger than final).'
+                return
+            }
+            const dv = ve * Math.log(mi / mf)
+            const out = `Tsiolkovsky rocket equation\n v_e = ${fmt(ve)}  m_i = ${fmt(mi)}  m_f = ${fmt(mf)}\n\n Δv = v_e · ln(m_i / m_f) = ${fmt(dv)}\n`
+            document.getElementById('results').textContent = out
+        }
+
+        // Radiation dose calculations
+        function computeRadiation(){
+            const energy_mev = getVal('energy_mev')
+            const flux = getVal('flux')
+            const area = getVal('area')
+            const time = getVal('time')
+            const mass = getVal('mass_rad')
+            const wr = getVal('wr')
+            
+            if(!(energy_mev>0 && flux>0 && area>0 && time>0 && mass>0 && wr>0)){
+                document.getElementById('results').textContent = 'Enter positive values for all radiation parameters.'
+                return
+            }
+
+            // Energy per particle conversion: MeV → J
+            const mev_to_j = 1.602e-13
+            const energy_j = energy_mev * mev_to_j
+
+            // Number of particles (fluence → count)
+            const N = flux * area * time
+
+            // Total energy deposited (assuming full energy deposition)
+            const E_tot = N * energy_j
+
+            // Absorbed dose (Gray): D = E_tot / mass
+            const dose_gy = E_tot / mass
+
+            // Equivalent dose (Sievert): H = D × wR
+            const dose_sv = dose_gy * wr
+
+            // Alternative calculation via stopping power (for reference)
+            // Fluence = flux × time (particles/cm²)
+            const fluence = flux * time
+
+            let out = ''
+            out += `Radiation Dose Calculations\n`
+            out += `Energy per particle: ${fmt(energy_mev)} MeV = ${fmt(energy_j, 3)} J\n`
+            out += `Flux: ${fmt(flux)} particles/cm²/s\n`
+            out += `Area: ${fmt(area)} cm²\n`
+            out += `Time: ${fmt(time)} s\n`
+            out += `Mass: ${fmt(mass)} kg\n`
+            out += `Radiation weighting factor wᵣ: ${fmt(wr)}\n\n`
+            
+            out += `Calculations:\n`
+            out += `Number of particles N = Φ × A × t = ${fmt(N)}\n`
+            out += `Fluence Φ_total = Φ × t = ${fmt(fluence)} particles/cm²\n`
+            out += `Total energy deposited E_tot = N × E = ${fmt(E_tot, 3)} J\n\n`
+            
+            out += `Doses:\n`
+            out += `Absorbed dose D = E_tot / m = ${fmt(dose_gy, 6)} Gy\n`
+            out += `Equivalent dose H = D × wᵣ = ${fmt(dose_sv, 6)} Sv\n`
+            out += `Equivalent dose H = ${fmt(dose_sv * 1000, 3)} mSv\n\n`
+            
+            out += `Formulas used:\n`
+            out += `• E(J) = E(MeV) × 1.602×10⁻¹³ J/MeV\n`
+            out += `• N = Φ × A × t\n`
+            out += `• E_tot = N × E(J)\n`
+            out += `• D(Gy) = E_tot(J) / m(kg)\n`
+            out += `• H(Sv) = D(Gy) × wᵣ\n`
+
+            document.getElementById('results').textContent = out
+        }
+
+        // Perturbation and advanced orbital mechanics calculations
+        function computePerturbations(){
+            const mu = getVal('mu')
+            const a = getVal('a')
+            const e = getVal('e')
+            const r = getVal('r')
+            const vr = getVal('vr')
+            const vtheta = getVal('vtheta')
+            const force_r = getVal('force_r')
+            const force_t = getVal('force_t')
+            const force_n = getVal('force_n')
+            const mass = getVal('sc_mass')
+            
+            if(!(mu>0 && a>0 && r>0 && mass>0)){
+                document.getElementById('results').textContent = 'Enter positive values for μ, a, r, and spacecraft mass.'
+                return
+            }
+
+            const v = Math.hypot(vr, vtheta)
+            
+            // Orbital energy
+            const E = -mu / (2 * a)
+            const E_current = v*v/2 - mu/r
+            
+            // Angular momentum magnitude
+            const h = r * vtheta
+            
+            // Flight path angle
+            const gamma = Math.atan2(vr, vtheta) * 180/Math.PI
+            
+            // Perigee and apogee
+            const rp = a * (1 - e)
+            const ra = a * (1 + e)
+            
+            // Vis-viva check
+            const v_visviva = Math.sqrt(mu * (2/r - 1/a))
+            
+            // Period (Kepler's 3rd law)
+            const T = 2 * Math.PI * Math.sqrt(a*a*a / mu)
+            
+            // Accelerations from forces
+            const accel_r = force_r / mass
+            const accel_t = force_t / mass
+            const accel_n = force_n / mass
+            
+            // Energy rate of change: Ė = F⃗ · v⃗ = r*ν̇*T
+            // For circular approximation: ν̇ ≈ vθ/r
+            const nu_dot = vtheta / r
+            const E_dot = r * nu_dot * force_t / mass
+            
+            // Angular momentum rate of change components
+            const h_dot_magnitude = Math.sqrt((r * force_t)**2 + (r * force_n)**2)
+            
+            let out = ''
+            out += `Advanced Orbital Mechanics & Perturbations\n`
+            out += `═══════════════════════════════════════════\n\n`
+            
+            out += `Current Orbital State:\n`
+            out += `μ = ${fmt(mu)} km³/s²\n`
+            out += `a = ${fmt(a)} km  |  e = ${fmt(e)}\n`
+            out += `r = ${fmt(r)} km  |  v = ${fmt(v)} km/s\n`
+            out += `vᵣ = ${fmt(vr)} km/s  |  vθ = ${fmt(vtheta)} km/s\n\n`
+            
+            out += `Fundamental Properties:\n`
+            out += `• Orbital Energy: E = -μ/(2a) = ${fmt(E)} km²/s²\n`
+            out += `• Current Energy: E = v²/2 - μ/r = ${fmt(E_current)} km²/s²\n`
+            out += `• Angular Momentum: h = r×v = ${fmt(h)} km²/s\n`
+            out += `• Flight Path Angle: γ = tan⁻¹(vᵣ/vθ) = ${fmt(gamma)}°\n`
+            out += `• Vis-Viva Check: v = ${fmt(v_visviva)} km/s\n\n`
+            
+            out += `Orbital Geometry:\n`
+            out += `• Perigee: rₚ = a(1-e) = ${fmt(rp)} km\n`
+            out += `• Apogee: rₐ = a(1+e) = ${fmt(ra)} km\n`
+            out += `• Period: T = 2π√(a³/μ) = ${fmt(T)} s = ${fmt(T/3600)} hours\n\n`
+            
+            out += `Perturbation Forces (RTN Frame):\n`
+            out += `F⃗ = R êᵣ + T êₜ + N êₙ\n`
+            out += `• Radial Force R = ${fmt(force_r)} N\n`
+            out += `• Transverse Force T = ${fmt(force_t)} N\n`
+            out += `• Normal Force N = ${fmt(force_n)} N\n`
+            out += `• Spacecraft Mass = ${fmt(mass)} kg\n\n`
+            
+            out += `Accelerations:\n`
+            out += `• aᵣ = R/m = ${fmt(accel_r)} m/s²\n`
+            out += `• aₜ = T/m = ${fmt(accel_t)} m/s²\n`
+            out += `• aₙ = N/m = ${fmt(accel_n)} m/s²\n\n`
+            
+            out += `Orbital Element Rates:\n`
+            out += `• Energy Rate: Ė = F⃗·v⃗ ≈ rν̇T = ${fmt(E_dot)} km²/s³\n`
+            out += `• Angular Momentum Rate: |ḣ| ≈ ${fmt(h_dot_magnitude)} km²/s²\n`
+            out += `  ḣ⃗ = r⃗×F⃗ = rT êₙ - rN êₜ\n\n`
+            
+            out += `Key Formulas Applied:\n`
+            out += `• Vis-Viva: v = √[μ(2/r - 1/a)]\n`
+            out += `• Energy: E = -μ/(2a) = v²/2 - μ/r\n`
+            out += `• Angular Momentum: h⃗ = r⃗×v⃗\n`
+            out += `• Flight Path: γ = tan⁻¹(vᵣ/vθ)\n`
+            out += `• Kepler's 3rd: T² ∝ a³\n`
+            out += `• Perturbation: F⃗ = R êᵣ + T êₜ + N êₙ\n`
+            out += `• Energy Rate: Ė = F⃗·v⃗\n`
+            out += `• Angular Momentum Rate: ḣ⃗ = r⃗×F⃗\n`
+
+            document.getElementById('results').textContent = out
+        }
+
+        // Attitude & Control calculations
+        function computeAttitude(){
+            // Get position vector components
+            const rx = getVal('pos_x')
+            const ry = getVal('pos_y') 
+            const rz = getVal('pos_z')
+            
+            // Get force vector components
+            const fx = getVal('force_x')
+            const fy = getVal('force_y')
+            const fz = getVal('force_z')
+            
+            // Get angular velocity components
+            const wx = getVal('omega_x')
+            const wy = getVal('omega_y')
+            const wz = getVal('omega_z')
+            
+            // Get moment of inertia components (diagonal matrix)
+            const Ixx = getVal('inertia_xx')
+            const Iyy = getVal('inertia_yy')
+            const Izz = getVal('inertia_zz')
+            
+            // Get angular acceleration components
+            const ax = getVal('alpha_x')
+            const ay = getVal('alpha_y')
+            const az = getVal('alpha_z')
+            
+            if(!(Ixx>0 && Iyy>0 && Izz>0)){
+                document.getElementById('results').textContent = 'Enter positive values for all moment of inertia components.'
+                return
+            }
+            
+            // Calculate torque τ = r × F
+            const tau_x = ry * fz - rz * fy
+            const tau_y = rz * fx - rx * fz
+            const tau_z = rx * fy - ry * fx
+            const tau_magnitude = Math.sqrt(tau_x*tau_x + tau_y*tau_y + tau_z*tau_z)
+            
+            // Calculate angular momentum L = I·ω
+            const Lx = Ixx * wx
+            const Ly = Iyy * wy
+            const Lz = Izz * wz
+            const L_magnitude = Math.sqrt(Lx*Lx + Ly*Ly + Lz*Lz)
+            
+            // Calculate ω × (I·ω) for Euler's equation
+            const cross_x = wy * Lz - wz * Ly
+            const cross_y = wz * Lx - wx * Lz
+            const cross_z = wx * Ly - wy * Lx
+            const cross_magnitude = Math.sqrt(cross_x*cross_x + cross_y*cross_y + cross_z*cross_z)
+            
+            // Calculate I·ω̇
+            const I_alpha_x = Ixx * ax
+            const I_alpha_y = Iyy * ay
+            const I_alpha_z = Izz * az
+            const I_alpha_magnitude = Math.sqrt(I_alpha_x*I_alpha_x + I_alpha_y*I_alpha_y + I_alpha_z*I_alpha_z)
+            
+            // Check Euler's equation: I·ω̇ + ω × (I·ω) = τ
+            const euler_x = I_alpha_x + cross_x - tau_x
+            const euler_y = I_alpha_y + cross_y - tau_y
+            const euler_z = I_alpha_z + cross_z - tau_z
+            const euler_residual = Math.sqrt(euler_x*euler_x + euler_y*euler_y + euler_z*euler_z)
+            
+            // Calculate rotational kinetic energy
+            const T_rot = 0.5 * (Ixx*wx*wx + Iyy*wy*wy + Izz*wz*wz)
+            
+            let out = ''
+            out += `Attitude & Control Calculations\n`
+            out += `═══════════════════════════════════════\n\n`
+            
+            out += `Input Vectors:\n`
+            out += `Position r⃗ = [${fmt(rx)}, ${fmt(ry)}, ${fmt(rz)}] m\n`
+            out += `Force F⃗ = [${fmt(fx)}, ${fmt(fy)}, ${fmt(fz)}] N\n`
+            out += `Angular velocity ω⃗ = [${fmt(wx)}, ${fmt(wy)}, ${fmt(wz)}] rad/s\n`
+            out += `Angular acceleration ω̇⃗ = [${fmt(ax)}, ${fmt(ay)}, ${fmt(az)}] rad/s²\n\n`
+            
+            out += `Moment of Inertia Matrix (diagonal):\n`
+            out += `I = diag([${fmt(Ixx)}, ${fmt(Iyy)}, ${fmt(Izz)}]) kg·m²\n\n`
+            
+            out += `Torque Calculation (τ⃗ = r⃗ × F⃗):\n`
+            out += `τ⃗ = [${fmt(tau_x)}, ${fmt(tau_y)}, ${fmt(tau_z)}] N·m\n`
+            out += `|τ⃗| = ${fmt(tau_magnitude)} N·m\n\n`
+            
+            out += `Angular Momentum (L⃗ = I·ω⃗):\n`
+            out += `L⃗ = [${fmt(Lx)}, ${fmt(Ly)}, ${fmt(Lz)}] kg·m²/s\n`
+            out += `|L⃗| = ${fmt(L_magnitude)} kg·m²/s\n\n`
+            
+            out += `Cross Product (ω⃗ × L⃗):\n`
+            out += `ω⃗ × (I·ω⃗) = [${fmt(cross_x)}, ${fmt(cross_y)}, ${fmt(cross_z)}] kg·m²/s²\n`
+            out += `|ω⃗ × (I·ω⃗)| = ${fmt(cross_magnitude)} kg·m²/s²\n\n`
+            
+            out += `Euler's Rotational Dynamics:\n`
+            out += `I·ω̇⃗ = [${fmt(I_alpha_x)}, ${fmt(I_alpha_y)}, ${fmt(I_alpha_z)}] N·m\n`
+            out += `I·ω̇⃗ + ω⃗×(I·ω⃗) = τ⃗\n`
+            out += `Equation residual = ${fmt(euler_residual)} N·m\n`
+            if(euler_residual < 1e-6) out += `✓ Euler's equation is satisfied\n`
+            else out += `⚠ Euler's equation residual indicates imbalance\n`
+            out += `\n`
+            
+            out += `Rotational Energy:\n`
+            out += `T_rot = ½ω⃗ᵀ·I·ω⃗ = ${fmt(T_rot)} J\n\n`
+            
+            out += `Key Formulas Applied:\n`
+            out += `• Torque: τ⃗ = r⃗ × F⃗\n`
+            out += `• Angular Momentum: L⃗ = I·ω⃗\n`
+            out += `• Euler's Equation: I·ω̇⃗ + ω⃗×(I·ω⃗) = τ⃗\n`
+            out += `• Rotational Energy: T = ½ω⃗ᵀ·I·ω⃗\n`
+            out += `• Cross Product: [a×b]ᵢ = aⱼbₖ - aₖbⱼ\n`
+            
+            document.getElementById('results').textContent = out
+        }
+
+        // Safety & Hazard Assessment calculations
+        function computeSafety(){
+            // Get radiation flux values
+            const flux_low = getVal('flux_low')
+            const flux_med = getVal('flux_med')
+            const flux_high = getVal('flux_high')
+            
+            // Get stopping power values
+            const stop_low = getVal('stop_low')
+            const stop_med = getVal('stop_med')
+            const stop_high = getVal('stop_high')
+            
+            // Get energy bins
+            const energy_low = getVal('energy_low')
+            const energy_med = getVal('energy_med')
+            const energy_high = getVal('energy_high')
+            
+            // Get geomagnetic index
+            const kp = getVal('kp_index')
+            
+            // Get spacecraft position
+            const sc_x = getVal('sc_pos_x')
+            const sc_y = getVal('sc_pos_y')
+            const sc_z = getVal('sc_pos_z')
+            
+            // Get object position
+            const obj_x = getVal('obj_pos_x')
+            const obj_y = getVal('obj_pos_y')
+            const obj_z = getVal('obj_pos_z')
+            
+            // Get other parameters
+            const time_tc = getVal('time_closest')
+            const density = getVal('material_density')
+            
+            if(!(flux_low>=0 && flux_med>=0 && flux_high>=0 && stop_low>0 && stop_med>0 && stop_high>0)){
+                document.getElementById('results').textContent = 'Enter positive values for flux and stopping power.'
+                return
+            }
+            
+            // Calculate integrated radiation dose D = ∫ Φ(E)S(E) dE
+            // Using trapezoidal integration over energy bins
+            const dE_low = energy_med - energy_low
+            const dE_high = energy_high - energy_med
+            
+            const dose_low = flux_low * stop_low * dE_low
+            const dose_med = flux_med * stop_med * dE_high
+            const dose_total = dose_low + dose_med + flux_high * stop_high * (energy_high * 0.1) // approximate high energy tail
+            
+            // Convert to standard units (Gy/s assuming 1 g/cm² material)
+            const dose_rate_gy_s = dose_total * 1.602e-13 / (density * 1000) // MeV to J, g to kg conversion
+            
+            // Geomagnetic trigger assessment
+            const geomag_trigger = kp >= 7
+            const geomag_risk = kp >= 5 ? 'Elevated' : kp >= 3 ? 'Moderate' : 'Low'
+            
+            // Collision probability calculation - minimum distance
+            const dx = sc_x - obj_x
+            const dy = sc_y - obj_y
+            const dz = sc_z - obj_z
+            const d_min = Math.sqrt(dx*dx + dy*dy + dz*dz)
+            
+            // Relative velocity approximation (assuming circular orbits)
+            const mu_earth = 398600 // km³/s²
+            const r_sc = Math.sqrt(sc_x*sc_x + sc_y*sc_y + sc_z*sc_z)
+            const r_obj = Math.sqrt(obj_x*obj_x + obj_y*obj_y + obj_z*obj_z)
+            const v_sc = Math.sqrt(mu_earth / r_sc)
+            const v_obj = Math.sqrt(mu_earth / r_obj)
+            const v_rel = Math.abs(v_sc - v_obj)
+            
+            // Collision cross-section (simplified spherical model)
+            const radius_sc = 5 // assumed spacecraft radius in meters
+            const radius_obj = 1 // assumed object radius in meters
+            const cross_section = Math.PI * Math.pow(radius_sc + radius_obj, 2) / 1e6 // convert to km²
+            
+            // Collision probability (simplified)
+            const collision_prob = cross_section / (Math.PI * d_min * d_min) * 100 // percentage
+            
+            // Risk assessment levels
+            const radiation_risk = dose_rate_gy_s > 1e-3 ? 'HIGH' : dose_rate_gy_s > 1e-6 ? 'MEDIUM' : 'LOW'
+            const collision_risk = d_min < 1 ? 'CRITICAL' : d_min < 10 ? 'HIGH' : d_min < 100 ? 'MEDIUM' : 'LOW'
+            
+            let out = ''
+            out += `Safety & Hazard Assessment\n`
+            out += `═══════════════════════════════════════\n\n`
+            
+            out += `Radiation Dose Analysis:\n`
+            out += `D = ∫ Φ(E)S(E) dE\n`
+            out += `Energy Bins: [${fmt(energy_low)}, ${fmt(energy_med)}, ${fmt(energy_high)}] MeV\n`
+            out += `Flux Φ(E): [${fmt(flux_low)}, ${fmt(flux_med)}, ${fmt(flux_high)}] particles/cm²/s\n`
+            out += `Stopping Power S(E): [${fmt(stop_low)}, ${fmt(stop_med)}, ${fmt(stop_high)}] MeV·cm²/g\n\n`
+            
+            out += `Dose Calculations:\n`
+            out += `• Low Energy Contribution: ${fmt(dose_low)} MeV/cm²/s\n`
+            out += `• Medium Energy Contribution: ${fmt(dose_med)} MeV/cm²/s\n`
+            out += `• Total Integrated Dose: ${fmt(dose_total)} MeV/cm²/s\n`
+            out += `• Dose Rate: ${fmt(dose_rate_gy_s, 8)} Gy/s\n`
+            out += `• Daily Dose: ${fmt(dose_rate_gy_s * 86400, 6)} Gy/day\n`
+            out += `• Risk Level: ${radiation_risk}\n\n`
+            
+            out += `Geomagnetic Activity:\n`
+            out += `Kp Index: ${fmt(kp)}\n`
+            out += `Trigger Condition (Kp ≥ 7): ${geomag_trigger ? '⚠ TRIGGERED' : '✓ Normal'}\n`
+            out += `Geomagnetic Risk: ${geomag_risk}\n`
+            if(geomag_trigger) out += `⚠ ALERT: Severe geomagnetic storm conditions!\n`
+            out += `\n`
+            
+            out += `Collision Analysis:\n`
+            out += `Spacecraft Position: [${fmt(sc_x)}, ${fmt(sc_y)}, ${fmt(sc_z)}] km\n`
+            out += `Object Position: [${fmt(obj_x)}, ${fmt(obj_y)}, ${fmt(obj_z)}] km\n`
+            out += `Minimum Distance: d_min = ||r⃗_sc(t_c) - r⃗_obj(t_c)|| = ${fmt(d_min)} km\n`
+            out += `Time to Closest Approach: ${fmt(time_tc)} s = ${fmt(time_tc/3600)} hours\n`
+            out += `Relative Velocity: ~${fmt(v_rel)} km/s\n`
+            out += `Collision Cross-Section: ${fmt(cross_section*1e6)} m²\n`
+            out += `Collision Probability: ${fmt(collision_prob, 6)}%\n`
+            out += `Collision Risk: ${collision_risk}\n\n`
+            
+            out += `Safety Recommendations:\n`
+            if(radiation_risk === 'HIGH') out += `• RADIATION: Immediate shielding or orbit change required\n`
+            if(geomag_trigger) out += `• GEOMAGNETIC: Monitor space weather, prepare for communication disruption\n`
+            if(collision_risk === 'CRITICAL' || collision_risk === 'HIGH') out += `• COLLISION: Execute avoidance maneuver immediately\n`
+            if(radiation_risk === 'LOW' && !geomag_trigger && collision_risk === 'LOW') out += `• All systems nominal - continue mission\n`
+            out += `\n`
+            
+            out += `Formulas Applied:\n`
+            out += `• Radiation Dose: D = ∫ Φ(E)S(E) dE\n`
+            out += `• Geomagnetic Trigger: Kp ≥ 7\n`
+            out += `• Minimum Distance: d_min = ||r⃗_sc(t_c) - r⃗_obj(t_c)||\n`
+            out += `• Collision Probability: P_c ∝ σ/πd²\n`
+            out += `• Orbital Velocity: v = √(μ/r)\n`
+            
+            document.getElementById('results').textContent = out
+        }
+
+        // Mission Scoring & Optimization calculations
+        function computeScoring(){
+            // Get mission parameters
+            const delta_v = getVal('delta_v')
+            const mission_time = getVal('mission_time')
+            const fuel_available = getVal('fuel_available')
+            
+            // Get scoring weights
+            const w_dv = getVal('weight_dv')
+            const w_t = getVal('weight_time')
+            const w_r = getVal('weight_risk')
+            
+            // Get risk components
+            const dose_D = getVal('dose_msv')
+            const prob_Pc = getVal('collision_prob')
+            const penalty_Q = getVal('attitude_penalty')
+            
+            // Get risk scaling factors
+            const alpha = getVal('alpha_dose')
+            const beta = getVal('beta_collision')
+            const gamma = getVal('gamma_penalty')
+            
+            // Get replanning thresholds
+            const dose_limit = getVal('dose_limit')
+            const prob_threshold = getVal('prob_threshold')
+            const fuel_requirement = getVal('fuel_requirement')
+            
+            if(!(delta_v>=0 && mission_time>0 && fuel_available>0 && w_dv>=0 && w_t>=0 && w_r>=0)){
+                document.getElementById('results').textContent = 'Enter positive values for mission parameters and weights.'
+                return
+            }
+            
+            // Normalize weights to sum to 1
+            const weight_sum = w_dv + w_t + w_r
+            const w_dv_norm = w_dv / weight_sum
+            const w_t_norm = w_t / weight_sum
+            const w_r_norm = w_r / weight_sum
+            
+            // Calculate hazard risk component R = αD + βPc + γQ
+            const risk_R = alpha * dose_D + beta * prob_Pc + gamma * penalty_Q
+            
+            // Normalize time component (convert to hours for readability)
+            const time_hours = mission_time / 3600
+            
+            // Calculate general scoring function J = w_Δv·Δv + w_t·T + w_r·R
+            const score_J = w_dv_norm * delta_v + w_t_norm * time_hours + w_r_norm * risk_R
+            
+            // Individual component contributions
+            const contrib_dv = w_dv_norm * delta_v
+            const contrib_time = w_t_norm * time_hours
+            const contrib_risk = w_r_norm * risk_R
+            
+            // Replanning trigger checks
+            const trigger_dose = dose_D > dose_limit
+            const trigger_collision = prob_Pc > prob_threshold
+            const trigger_fuel = fuel_available < fuel_requirement
+            
+            const replanning_needed = trigger_dose || trigger_collision || trigger_fuel
+            
+            // Mission efficiency metrics
+            const fuel_efficiency = delta_v / fuel_available // m/s per kg
+            const time_efficiency = delta_v / time_hours // m/s per hour
+            const risk_per_dv = risk_R / delta_v // risk per m/s
+            
+            // Fuel consumption estimate (using rocket equation approximation)
+            const specific_impulse = 300 // seconds (typical for chemical propulsion)
+            const exhaust_velocity = specific_impulse * 9.81 // m/s
+            const mass_ratio = Math.exp(delta_v / exhaust_velocity)
+            const fuel_needed = fuel_available * (mass_ratio - 1) / mass_ratio
+            
+            let out = ''
+            out += `Mission Scoring & Optimization Analysis\n`
+            out += `═══════════════════════════════════════════\n\n`
+            
+            out += `Mission Parameters:\n`
+            out += `• Total Δv Required: ${fmt(delta_v)} m/s\n`
+            out += `• Mission Duration: ${fmt(mission_time)} s = ${fmt(time_hours)} hours\n`
+            out += `• Fuel Available: ${fmt(fuel_available)} kg\n`
+            out += `• Estimated Fuel Needed: ${fmt(fuel_needed)} kg\n\n`
+            
+            out += `Scoring Weights (normalized):\n`
+            out += `• w_Δv = ${fmt(w_dv_norm, 3)} (fuel/velocity importance)\n`
+            out += `• w_t = ${fmt(w_t_norm, 3)} (time importance)\n`
+            out += `• w_r = ${fmt(w_r_norm, 3)} (risk importance)\n`
+            out += `• Weight sum check: ${fmt(w_dv_norm + w_t_norm + w_r_norm, 3)}\n\n`
+            
+            out += `Hazard Risk Components:\n`
+            out += `R = αD + βPc + γQ\n`
+            out += `• Radiation Dose D = ${fmt(dose_D)} mSv (α = ${fmt(alpha)})\n`
+            out += `• Collision Probability Pc = ${fmt(prob_Pc)} (β = ${fmt(beta)})\n`
+            out += `• Attitude Penalty Q = ${fmt(penalty_Q)} (γ = ${fmt(gamma)})\n`
+            out += `• Total Risk Score R = ${fmt(risk_R)}\n\n`
+            
+            out += `General Scoring Function:\n`
+            out += `J = w_Δv·Δv + w_t·T + w_r·R\n`
+            out += `• Δv Contribution: ${fmt(contrib_dv)}\n`
+            out += `• Time Contribution: ${fmt(contrib_time)}\n`
+            out += `• Risk Contribution: ${fmt(contrib_risk)}\n`
+            out += `• Total Mission Score J = ${fmt(score_J)}\n\n`
+            
+            out += `Replanning Trigger Analysis:\n`
+            out += `• Dose Check: D = ${fmt(dose_D)} vs D_limit = ${fmt(dose_limit)} mSv\n`
+            out += `  ${trigger_dose ? '⚠ TRIGGERED - Radiation too high!' : '✓ Within limits'}\n`
+            out += `• Collision Check: Pc = ${fmt(prob_Pc)} vs P_threshold = ${fmt(prob_threshold)}\n`
+            out += `  ${trigger_collision ? '⚠ TRIGGERED - Collision risk too high!' : '✓ Within limits'}\n`
+            out += `• Fuel Check: Available = ${fmt(fuel_available)} vs Required = ${fmt(fuel_requirement)} kg\n`
+            out += `  ${trigger_fuel ? '⚠ TRIGGERED - Insufficient fuel!' : '✓ Sufficient fuel'}\n`
+            out += `• Replanning Status: ${replanning_needed ? '🚨 REPLANNING REQUIRED' : '✅ Mission GO'}\n\n`
+            
+            out += `Mission Efficiency Metrics:\n`
+            out += `• Fuel Efficiency: ${fmt(fuel_efficiency, 4)} m/s per kg\n`
+            out += `• Time Efficiency: ${fmt(time_efficiency, 4)} m/s per hour\n`
+            out += `• Risk per Δv: ${fmt(risk_per_dv, 4)} risk units per m/s\n`
+            out += `• Mass Ratio: ${fmt(mass_ratio, 3)}\n\n`
+            
+            if(replanning_needed) {
+                out += `🚨 MISSION REPLANNING RECOMMENDATIONS:\n`
+                if(trigger_dose) out += `• Reduce radiation exposure: alter trajectory or add shielding\n`
+                if(trigger_collision) out += `• Implement collision avoidance maneuvers\n`
+                if(trigger_fuel) out += `• Optimize trajectory for lower Δv or increase fuel capacity\n`
+                out += `\n`
+            }
+            
+            out += `Optimization Insights:\n`
+            if(w_dv_norm > 0.5) out += `• High fuel weight suggests optimizing for minimum Δv\n`
+            if(w_t_norm > 0.5) out += `• High time weight suggests optimizing for minimum duration\n`
+            if(w_r_norm > 0.5) out += `• High risk weight suggests prioritizing safety margins\n`
+            out += `• Lower J score indicates better mission performance\n\n`
+            
+            out += `Mathematical Formulas Used:\n`
+            out += `• General Score: J = w_Δv·Δv + w_t·T + w_r·R\n`
+            out += `• Risk Function: R = αD + βPc + γQ\n`
+            out += `• Triggers: D > D_limit, Pc > P_threshold, Fuel < Requirement\n`
+            out += `• Rocket Equation: Δv = ve·ln(m_i/m_f)\n`
+            out += `• Mass Ratio: λ = exp(Δv/ve)\n`
+            
+            document.getElementById('results').textContent = out
+        }
+    </script>
 </body>
 </html>

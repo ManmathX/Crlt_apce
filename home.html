@@ -3,19 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Satellite Research Hackathon - Home</title>
+    <title>SatelliteX Research - Advanced Space Technology</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Enhanced Space Background */
+        body {
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Stars */
+        .stars {
+            background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><circle cx="50" cy="50" r="1" fill="white" opacity="0.8"/><circle cx="150" cy="80" r="0.5" fill="white" opacity="0.6"/><circle cx="300" cy="60" r="1.2" fill="white" opacity="0.9"/><circle cx="120" cy="160" r="0.8" fill="white" opacity="0.7"/><circle cx="240" cy="140" r="0.4" fill="white" opacity="0.5"/><circle cx="360" cy="180" r="1" fill="white" opacity="0.8"/><circle cx="60" cy="240" r="0.6" fill="white" opacity="0.6"/><circle cx="180" cy="280" r="1.1" fill="white" opacity="0.9"/><circle cx="320" cy="260" r="0.7" fill="white" opacity="0.7"/><circle cx="80" cy="340" r="0.9" fill="white" opacity="0.8"/><circle cx="220" cy="360" r="0.5" fill="white" opacity="0.6"/><circle cx="340" cy="340" r="1.3" fill="white" opacity="1"/></svg>') repeat;
+            animation: move-stars 300s linear infinite;
+        }
+
+        .twinkling {
+            background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><circle cx="100" cy="100" r="1" fill="%234a90e2" opacity="0.8"><animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/></circle><circle cx="200" cy="60" r="0.8" fill="%236c7b7f" opacity="0.6"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="4s" repeatCount="indefinite"/></circle><circle cx="340" cy="160" r="1.2" fill="%234a90e2" opacity="0.7"><animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/></circle><circle cx="60" cy="300" r="0.6" fill="%236c7b7f" opacity="0.9"><animate attributeName="opacity" values="0.1;0.8;0.1" dur="3.5s" repeatCount="indefinite"/></circle><circle cx="280" cy="240" r="0.9" fill="%234a90e2" opacity="0.5"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.8s" repeatCount="indefinite"/></circle></svg>') repeat;
+            animation: move-twinkle 200s linear infinite;
+        }
+
+        /* Shooting Stars */
+        .shooting-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(45deg, #fff, transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff, 0 0 20px #4a90e2, 0 0 30px #4a90e2;
+        }
+
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 1px;
+            background: linear-gradient(90deg, #fff, transparent);
+            transform: translateX(-50px);
+        }
+
+        .shooting-star:nth-child(1) {
+            top: 20%;
+            left: -50px;
+            animation: shoot1 8s linear infinite;
+        }
+
+        .shooting-star:nth-child(2) {
+            top: 40%;
+            left: -50px;
+            animation: shoot2 12s linear infinite 3s;
+        }
+
+        .shooting-star:nth-child(3) {
+            top: 60%;
+            left: -50px;
+            animation: shoot3 10s linear infinite 6s;
+        }
+
+        @keyframes shoot1 {
+            0% { transform: translateX(0) translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(-200px); opacity: 0; }
+        }
+
+        @keyframes shoot2 {
+            0% { transform: translateX(0) translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(-150px); opacity: 0; }
+        }
+
+        @keyframes shoot3 {
+            0% { transform: translateX(0) translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(-180px); opacity: 0; }
+        }
+
+        /* Enhanced Nebula Effects */
+        .cosmic-dust {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .dust-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.3), rgba(108, 123, 127, 0.2), transparent);
+            filter: blur(1px);
+        }
+
+        .dust-1 {
+            top: 15%;
+            left: 20%;
+            width: 100px;
+            height: 100px;
+            animation: float-dust 25s ease-in-out infinite;
+        }
+
+        .dust-2 {
+            top: 70%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            animation: float-dust 20s ease-in-out infinite reverse;
+        }
+
+        .dust-3 {
+            bottom: 30%;
+            left: 60%;
+            width: 120px;
+            height: 120px;
+            animation: float-dust 30s ease-in-out infinite;
+        }
+
+        @keyframes float-dust {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) scale(1);
+                opacity: 0.3;
+            }
+            33% { 
+                transform: translateY(-30px) translateX(20px) scale(1.1);
+                opacity: 0.6;
+            }
+            66% { 
+                transform: translateY(20px) translateX(-15px) scale(0.9);
+                opacity: 0.4;
+            }
+        }
+
+        /* Enhanced Hero Section */
+        .hero {
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(74, 144, 226, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(108, 123, 127, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(44, 90, 160, 0.1) 0%, transparent 50%);
+        }
+
+        /* Pulsing Stars */
+        .pulse-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #4a90e2;
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        .pulse-star:nth-child(1) {
+            top: 25%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .pulse-star:nth-child(2) {
+            top: 45%;
+            right: 20%;
+            animation-delay: 1.5s;
+        }
+
+        .pulse-star:nth-child(3) {
+            bottom: 35%;
+            left: 70%;
+            animation-delay: 3s;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 10px #4a90e2;
+                opacity: 0.7;
+            }
+            50% { 
+                transform: scale(1.5);
+                box-shadow: 0 0 20px #4a90e2, 0 0 30px #6c7b7f;
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="stars"></div>
     <div class="twinkling"></div>
+    <div class="shooting-stars">
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+    </div>
+    <div class="cosmic-dust">
+        <div class="dust-particle dust-1"></div>
+        <div class="dust-particle dust-2"></div>
+        <div class="dust-particle dust-3"></div>
+        <div class="pulse-star"></div>
+        <div class="pulse-star"></div>
+        <div class="pulse-star"></div>
+    </div>
     <div class="floating-objects">
-        <div class="asteroid asteroid-1">🪨</div>
-        <div class="asteroid asteroid-2">☄️</div>
-        <div class="asteroid asteroid-3">🌑</div>
-        <div class="space-debris debris-1">🛸</div>
-        <div class="space-debris debris-2">🚀</div>
+        <div class="asteroid asteroid-1">●</div>
+        <div class="asteroid asteroid-2">●</div>
+        <div class="asteroid asteroid-3">●</div>
+        <div class="space-debris debris-1">▲</div>
+        <div class="space-debris debris-2">▲</div>
         <div class="nebula nebula-1"></div>
         <div class="nebula nebula-2"></div>
     </div>
@@ -24,8 +232,8 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <span class="satellite-icon">🛰️</span>
-                <span>Team Mama</span>
+                <span class="satellite-icon">◆</span>
+                <span>Team MaMa Research</span>
             </div>
             <ul class="nav-menu">
                 <li><a href="home.html" class="active">Home</a></li>
@@ -35,6 +243,7 @@
                 <li><a href="lab.html">Lab</a></li>
                 <li><a href="observations.html">Observations</a></li>
                 <li><a href="playground.html">Playground</a></li>
+                <li><a href="concepts.html">Concepts</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
@@ -43,11 +252,11 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Space Satellite Research Hackathon</h1>
-            <p class="hero-subtitle">Exploring the cosmos through innovative satellite technology</p>
+            <h1 class="hero-title">Advanced Satellite Research Initiative</h1>
+            <p class="hero-subtitle">Pioneering next-generation satellite technologies for Earth observation and space exploration</p>
             <div class="hero-buttons">
-                <a href="mission.html" class="btn btn-primary">Join Mission</a>
-                <a href="lab.html" class="btn btn-secondary">Explore Lab</a>
+                <a href="mission.html" class="btn btn-primary">View Research</a>
+                <a href="lab.html" class="btn btn-secondary">Access Lab</a>
             </div>
         </div>
         <div class="satellite-orbit">
@@ -58,30 +267,30 @@
     <!-- Quick Overview Section -->
     <section class="overview">
         <div class="container">
-            <h2 class="section-title">Welcome to the Future of Space Research</h2>
+            <h2 class="section-title">Advanced Satellite Technology Research</h2>
             <div class="overview-grid">
                 <div class="overview-card">
-                    <div class="card-icon">🌍</div>
+                    <div class="card-icon">◉</div>
                     <h3>Earth Observation</h3>
-                    <p>Advanced satellite monitoring for climate and environmental research</p>
+                    <p>High-resolution satellite monitoring systems for climate analysis and environmental research</p>
                     <a href="mission.html" class="card-link">Learn More →</a>
                 </div>
                 <div class="overview-card">
-                    <div class="card-icon">🧪</div>
-                    <h3>Interactive Lab</h3>
-                    <p>Hands-on experiments with orbital mechanics and satellite design</p>
+                    <div class="card-icon">◈</div>
+                    <h3>Research Laboratory</h3>
+                    <p>Advanced computational tools for orbital mechanics and satellite system design</p>
                     <a href="lab.html" class="card-link">Try Lab →</a>
                 </div>
                 <div class="overview-card">
-                    <div class="card-icon">📡</div>
-                    <h3>Live Satellites</h3>
-                    <p>Track real-time satellite positions and mission data</p>
+                    <div class="card-icon">◇</div>
+                    <h3>Satellite Tracking</h3>
+                    <p>Real-time monitoring of satellite positions and mission telemetry data</p>
                     <a href="satellites.html" class="card-link">Track Now →</a>
                 </div>
                 <div class="overview-card">
-                    <div class="card-icon">🔬</div>
-                    <h3>Research Hub</h3>
-                    <p>Cutting-edge research in satellite technology and space science</p>
+                    <div class="card-icon">◆</div>
+                    <h3>Research Publications</h3>
+                    <p>Latest developments in satellite technology and space science research</p>
                     <a href="research.html" class="card-link">Explore →</a>
                 </div>
             </div>

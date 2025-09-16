@@ -7,8 +7,8 @@
 
 body {
     font-family: 'Exo 2', sans-serif;
-    background: #0a0a0a;
-    color: #ffffff;
+    background: #1a1a2e;
+    color: #e8e8e8;
     overflow-x: hidden;
     line-height: 1.6;
     perspective: 1000px;
@@ -212,7 +212,7 @@ html {
     font-family: 'Orbitron', monospace;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #00d4ff;
+    color: #2c5aa0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -243,7 +243,7 @@ html {
 }
 
 .nav-menu a:hover {
-    color: #00d4ff;
+    color: #4a90e2;
 }
 
 .nav-menu a::after {
@@ -253,7 +253,7 @@ html {
     height: 2px;
     bottom: -5px;
     left: 0;
-    background: linear-gradient(90deg, #00d4ff, #ff6b6b);
+    background: linear-gradient(90deg, #4a90e2, #6c7b7f);
     transition: width 0.3s ease;
 }
 
@@ -281,7 +281,7 @@ html {
     font-size: 3.5rem;
     font-weight: 900;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, #00d4ff, #ff6b6b, #4ecdc4);
+    background: linear-gradient(45deg, #4a90e2, #6c7b7f, #2c5aa0);
     background-size: 300% 300%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -337,14 +337,14 @@ html {
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    background: linear-gradient(45deg, #4a90e2, #2c5aa0);
     color: white;
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-5px) translateZ(10px) rotateX(10deg);
-    box-shadow: 0 15px 35px rgba(0, 212, 255, 0.6);
+    box-shadow: 0 15px 35px rgba(74, 144, 226, 0.6);
 }
 
 .btn-primary:hover::before {
@@ -354,15 +354,15 @@ html {
 
 .btn-secondary {
     background: transparent;
-    color: #00d4ff;
-    border: 2px solid #00d4ff;
+    color: #4a90e2;
+    border: 2px solid #4a90e2;
 }
 
 .btn-secondary:hover {
-    background: #00d4ff;
+    background: #4a90e2;
     color: #000;
     transform: translateY(-5px) translateZ(10px) rotateX(-10deg);
-    box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+    box-shadow: 0 15px 35px rgba(74, 144, 226, 0.4);
 }
 
 /* 3D Satellite Orbit Animation */
@@ -377,7 +377,7 @@ html {
     border-radius: 50%;
     animation: rotate3DOrbit 20s linear infinite;
     transform-style: preserve-3d;
-    box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 50px rgba(74, 144, 226, 0.3);
 }
 
 .satellite {
@@ -446,7 +446,7 @@ section {
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 3rem;
-    color: #00d4ff;
+    color: #4a90e2;
 }
 
 /* Mission Section */
@@ -504,7 +504,7 @@ section {
 }
 
 .card-front:hover {
-    box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 20px 40px rgba(74, 144, 226, 0.3);
     transform: translateZ(20px);
 }
 

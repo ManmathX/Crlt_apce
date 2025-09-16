@@ -33,15 +33,166 @@
                 <li><a href="research.html">Research</a></li>
                 <li><a href="satellites.html">Satellites</a></li>
                 <li><a href="lab.html" class="active">Lab</a></li>
-                <li><a href="nasa-apod.html">NASA APOD</a></li>
-                <li><a href="contact.html">Contact</a></li>
                 <li><a href="observations.html">Observations</a></li>
+                <li><a href="playground.html">Playground</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Lab Header -->
-    <script src="script.js"></script>
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">🧪 Satellite Research Lab</h1>
+            <p class="page-subtitle">Interactive experiments and simulations for satellite research</p>
+        </div>
+    </section>
+
+    <!-- Lab Section -->
+    <section id="satellite-lab" class="satellite-lab">
+        <div class="container">
+            <div class="lab-navigation">
+                <button class="lab-tab active" data-experiment="orbit">🌍 Orbit Calculator</button>
+                <button class="lab-tab" data-experiment="signal">📡 Signal Simulator</button>
+                <button class="lab-tab" data-experiment="designer">🛰️ Satellite Designer</button>
+                <button class="lab-tab" data-experiment="odin">🧠 Digital Twin (ODIN)</button>
+            </div>
+            
+            <div class="lab-content">
+                <!-- Orbit Calculator Experiment -->
+                <div class="lab-experiment active" id="orbit-experiment">
+                    <h3>Orbital Mechanics Calculator</h3>
+                    <div class="experiment-controls">
+                        <div class="control-group">
+                            <label>Altitude (km):</label>
+                            <input type="range" id="altitude-slider" min="200" max="35786" value="400">
+                            <span id="altitude-value">400</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Satellite Mass (kg):</label>
+                            <input type="range" id="mass-slider" min="100" max="10000" value="1000">
+                            <span id="mass-value">1000</span>
+                        </div>
+                        <button class="btn btn-primary" id="calculate-orbit">Calculate Orbit</button>
+                    </div>
+                    <div class="experiment-results">
+                        <div class="result-card">
+                            <h4>Orbital Velocity</h4>
+                            <div class="result-value" id="orbital-velocity">7.67 km/s</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Orbital Period</h4>
+                            <div class="result-value" id="orbital-period">92.7 minutes</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Gravitational Force</h4>
+                            <div class="result-value" id="gravitational-force">8829 N</div>
+                        </div>
+                    </div>
+                    <div class="orbit-visualization" id="orbit-viz"></div>
+                </div>
+                
+                <!-- Signal Strength Simulator -->
+                <div class="lab-experiment" id="signal-experiment">
+                    <h3>Signal Strength Simulator</h3>
+                    <div class="experiment-controls">
+                        <div class="control-group">
+                            <label>Distance to Satellite (km):</label>
+                            <input type="range" id="distance-slider" min="400" max="36000" value="2000">
+                            <span id="distance-value">2000</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Transmitter Power (W):</label>
+                            <input type="range" id="power-slider" min="10" max="1000" value="100">
+                            <span id="power-value">100</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Weather Conditions:</label>
+                            <select id="weather-select">
+                                <option value="clear">Clear Sky</option>
+                                <option value="cloudy">Cloudy</option>
+                                <option value="rain">Rain</option>
+                                <option value="storm">Storm</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="signal-visualization">
+                        <div class="signal-meter">
+                            <div class="signal-bar" id="signal-bar"></div>
+                            <div class="signal-percentage" id="signal-percentage">85%</div>
+                        </div>
+                        <div class="signal-quality" id="signal-quality">Excellent</div>
+                    </div>
+                </div>
+
+                <!-- Satellite Designer -->
+                <div class="lab-experiment" id="designer-experiment">
+                    <h3>Satellite Mission Designer</h3>
+                    <div class="designer-interface">
+                        <div class="satellite-builder">
+                            <h4>Build Your Satellite</h4>
+                            <div class="component-selector">
+                                <div class="component-category">
+                                    <h5>Power System</h5>
+                                    <label><input type="radio" name="power" value="solar"> Solar Panels</label>
+                                    <label><input type="radio" name="power" value="nuclear"> Nuclear RTG</label>
+                                    <label><input type="radio" name="power" value="battery"> Battery Pack</label>
+                                </div>
+                                <div class="component-category">
+                                    <h5>Communication</h5>
+                                    <label><input type="radio" name="comm" value="uhf"> UHF Radio</label>
+                                    <label><input type="radio" name="comm" value="xband"> X-Band</label>
+                                    <label><input type="radio" name="comm" value="laser"> Laser Comm</label>
+                                </div>
+                                <div class="component-category">
+                                    <h5>Payload</h5>
+                                    <label><input type="radio" name="payload" value="camera"> Imaging Camera</label>
+                                    <label><input type="radio" name="payload" value="radar"> Radar System</label>
+                                    <label><input type="radio" name="payload" value="spectrometer"> Spectrometer</label>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="design-satellite">Design Mission</button>
+                        </div>
+                        <div class="mission-summary" id="mission-summary">
+                            <h4>Mission Analysis</h4>
+                            <div class="summary-content">
+                                <p>Select components to analyze your satellite mission...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Twin (ODIN) Experiment -->
+                <div class="lab-experiment" id="odin-experiment">
+                    <h3>ODIN Digital Twin Simulator</h3>
+                    <p class="odin-intro">
+                        A digital twin of the spacecraft and its surrounding space for AI-driven planning.
+                    </p>
+                    <div class="odin-grid">
+                        <div class="odin-panel">
+                            <h4>Scenario & Data</h4>
+                            <div class="control-group">
+                                <label>Hazard Scenario</label>
+                                <select id="odin-hazard">
+                                    <option value="none">None</option>
+                                    <option value="solar">Solar Storm</option>
+                                    <option value="debris">Debris Field</option>
+                                    <option value="radiation">High Radiation</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="odin-run">Generate Routes</button>
+                        </div>
+                        <div class="odin-panel">
+                            <h4>Visualization</h4>
+                            <div class="odin-viz" id="odin-viz">
+                                <canvas id="odin-canvas" width="420" height="240"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <footer class="footer">
         <div class="container">

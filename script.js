@@ -2209,6 +2209,430 @@ class ObservationsController {
     }
 }
 
+// AI Chatbot Assistant using Google Gemini API
+class AIChatbot {
+    constructor() {
+        this.apiKey = 'AIzaSyCCTY4yHdFGKm3NutTgbZftFVeBol7xwss';
+        this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        this.isOpen = false;
+        this.conversationHistory = [];
+        this.init();
+    }
+    
+    init() {
+        this.createChatbotUI();
+        this.setupEventListeners();
+    }
+    
+    createChatbotUI() {
+        // Create chatbot container
+        const chatbotContainer = document.createElement('div');
+        chatbotContainer.id = 'ai-chatbot';
+        chatbotContainer.innerHTML = `
+            <div class="chatbot-toggle" id="chatbot-toggle">
+                <span class="chatbot-icon">🤖</span>
+                <span class="chatbot-text">AI Assistant</span>
+            </div>
+            <div class="chatbot-window" id="chatbot-window">
+                <div class="chatbot-header">
+                    <h4>🚀 Space AI Assistant</h4>
+                    <button class="chatbot-close" id="chatbot-close">×</button>
+                </div>
+                <div class="chatbot-messages" id="chatbot-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            Hello! I'm your space research AI assistant. Ask me about satellites, orbital mechanics, space missions, or anything related to your research!
+                        </div>
+                    </div>
+                </div>
+                <div class="chatbot-input-area">
+                    <input type="text" id="chatbot-input" placeholder="Ask about satellites, orbits, space missions..." />
+                    <button id="chatbot-send">Send</button>
+                </div>
+                <div class="chatbot-status" id="chatbot-status"></div>
+            </div>
+        `;
+        
+        document.body.appendChild(chatbotContainer);
+        this.addChatbotStyles();
+    }
+    
+    addChatbotStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            #ai-chatbot {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+                font-family: 'Exo 2', sans-serif;
+            }
+            
+            .chatbot-toggle {
+                background: linear-gradient(45deg, #00d4ff, #0099cc);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 25px;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(0, 212, 255, 0.5);
+            }
+            
+            .chatbot-toggle:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+            }
+            
+            .chatbot-icon {
+                font-size: 1.2em;
+                animation: pulse 2s infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+            
+            .chatbot-window {
+                position: absolute;
+                bottom: 70px;
+                right: 0;
+                width: 350px;
+                height: 500px;
+                background: rgba(10, 25, 47, 0.95);
+                border: 1px solid #00d4ff;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+                display: none;
+                flex-direction: column;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+            
+            .chatbot-window.open {
+                display: flex;
+                animation: slideUp 0.3s ease;
+            }
+            
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .chatbot-header {
+                padding: 15px;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: rgba(0, 212, 255, 0.1);
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .chatbot-header h4 {
+                margin: 0;
+                color: #00d4ff;
+                font-size: 1.1em;
+            }
+            
+            .chatbot-close {
+                background: none;
+                border: none;
+                color: #ff6b6b;
+                font-size: 1.5em;
+                cursor: pointer;
+                padding: 0;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s ease;
+            }
+            
+            .chatbot-close:hover {
+                background: rgba(255, 107, 107, 0.2);
+            }
+            
+            .chatbot-messages {
+                flex: 1;
+                padding: 15px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .message {
+                max-width: 80%;
+                word-wrap: break-word;
+            }
+            
+            .bot-message {
+                align-self: flex-start;
+            }
+            
+            .user-message {
+                align-self: flex-end;
+            }
+            
+            .message-content {
+                padding: 10px 15px;
+                border-radius: 15px;
+                line-height: 1.4;
+                font-size: 0.9em;
+            }
+            
+            .bot-message .message-content {
+                background: rgba(0, 212, 255, 0.1);
+                border: 1px solid rgba(0, 212, 255, 0.3);
+                color: #e0f7ff;
+            }
+            
+            .user-message .message-content {
+                background: rgba(76, 175, 80, 0.2);
+                border: 1px solid rgba(76, 175, 80, 0.4);
+                color: #c8e6c9;
+            }
+            
+            .chatbot-input-area {
+                padding: 15px;
+                border-top: 1px solid rgba(0, 212, 255, 0.3);
+                display: flex;
+                gap: 10px;
+            }
+            
+            #chatbot-input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid rgba(0, 212, 255, 0.5);
+                border-radius: 20px;
+                background: rgba(0, 212, 255, 0.05);
+                color: white;
+                font-family: 'Exo 2', sans-serif;
+                outline: none;
+            }
+            
+            #chatbot-input::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+            
+            #chatbot-input:focus {
+                border-color: #00d4ff;
+                box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+            }
+            
+            #chatbot-send {
+                padding: 10px 20px;
+                background: linear-gradient(45deg, #4ecdc4, #44a08d);
+                border: none;
+                border-radius: 20px;
+                color: white;
+                cursor: pointer;
+                font-family: 'Exo 2', sans-serif;
+                font-weight: 600;
+                transition: all 0.2s ease;
+            }
+            
+            #chatbot-send:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 10px rgba(78, 205, 196, 0.3);
+            }
+            
+            #chatbot-send:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+            
+            .chatbot-status {
+                padding: 5px 15px;
+                font-size: 0.8em;
+                color: rgba(255, 255, 255, 0.6);
+                text-align: center;
+            }
+            
+            .typing-indicator {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: #00d4ff;
+                font-style: italic;
+            }
+            
+            .typing-dots {
+                display: flex;
+                gap: 2px;
+            }
+            
+            .typing-dot {
+                width: 4px;
+                height: 4px;
+                background: #00d4ff;
+                border-radius: 50%;
+                animation: typingDot 1.4s infinite;
+            }
+            
+            .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+            .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+            
+            @keyframes typingDot {
+                0%, 60%, 100% { opacity: 0.3; }
+                30% { opacity: 1; }
+            }
+            
+            @media (max-width: 768px) {
+                .chatbot-window {
+                    width: 300px;
+                    height: 400px;
+                }
+                
+                #ai-chatbot {
+                    bottom: 15px;
+                    right: 15px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    setupEventListeners() {
+        const toggle = document.getElementById('chatbot-toggle');
+        const close = document.getElementById('chatbot-close');
+        const send = document.getElementById('chatbot-send');
+        const input = document.getElementById('chatbot-input');
+        
+        toggle.addEventListener('click', () => this.toggleChatbot());
+        close.addEventListener('click', () => this.closeChatbot());
+        send.addEventListener('click', () => this.sendMessage());
+        
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.sendMessage();
+            }
+        });
+    }
+    
+    toggleChatbot() {
+        const window = document.getElementById('chatbot-window');
+        this.isOpen = !this.isOpen;
+        
+        if (this.isOpen) {
+            window.classList.add('open');
+            document.getElementById('chatbot-input').focus();
+        } else {
+            window.classList.remove('open');
+        }
+    }
+    
+    closeChatbot() {
+        const window = document.getElementById('chatbot-window');
+        window.classList.remove('open');
+        this.isOpen = false;
+    }
+    
+    async sendMessage() {
+        const input = document.getElementById('chatbot-input');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        // Add user message to chat
+        this.addMessage(message, 'user');
+        input.value = '';
+        
+        // Show typing indicator
+        this.showTypingIndicator();
+        
+        try {
+            const response = await this.callGeminiAPI(message);
+            this.hideTypingIndicator();
+            this.addMessage(response, 'bot');
+        } catch (error) {
+            this.hideTypingIndicator();
+            this.addMessage('Sorry, I encountered an error. Please try again later.', 'bot');
+            console.error('Chatbot error:', error);
+        }
+    }
+    
+    async callGeminiAPI(message) {
+        // Add context about the space research website
+        const contextualMessage = `You are an AI assistant for a space satellite research website. The user is asking: "${message}". Please provide helpful information about satellites, orbital mechanics, space missions, or related topics. Keep responses concise but informative.`;
+        
+        const response = await fetch(this.apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-goog-api-key': this.apiKey
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: contextualMessage
+                    }]
+                }]
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+    }
+    
+    addMessage(content, type) {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = content;
+        
+        messageDiv.appendChild(contentDiv);
+        messagesContainer.appendChild(messageDiv);
+        
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Store in conversation history
+        this.conversationHistory.push({ type, content, timestamp: new Date() });
+    }
+    
+    showTypingIndicator() {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.className = 'message bot-message';
+        typingDiv.innerHTML = `
+            <div class="message-content typing-indicator">
+                AI is thinking
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        `;
+        
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+}
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new SatelliteTracker();
@@ -2217,49 +2641,8 @@ document.addEventListener('DOMContentLoaded', () => {
     new SatelliteDataSimulator();
     new AnimationController();
     new NASAAPODFetcher();
-    new SatelliteLab(); // Add the new lab system
-    new SolarSystemAPI(); // Add Solar System API integration
-    window.observationsController = new ObservationsController(); // Observations page controller
-    
-    // Add loading animation
-    document.body.style.opacity = '0';
-    setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '1';
-    }, 100);
+    new SatelliteLab();
+    new SolarSystemAPI();
+    new ObservationsController();
+    new AIChatbot();
 });
-
-// Easter egg: Konami code for special animation
-let konamiCode = [];
-const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
-
-document.addEventListener('keydown', (e) => {
-    konamiCode.push(e.keyCode);
-    
-    if (konamiCode.length > konamiSequence.length) {
-        konamiCode.shift();
-    }
-    
-    if (konamiCode.length === konamiSequence.length && 
-        konamiCode.every((code, index) => code === konamiSequence[index])) {
-        
-        // Trigger special space animation
-        document.body.style.animation = 'hyperspace 2s ease';
-        
-        setTimeout(() => {
-            alert('🚀 Welcome to the secret space mission, Commander! 🛰️');
-            document.body.style.animation = '';
-        }, 2000);
-    }
-});
-
-// Add hyperspace animation
-const hyperspaceStyle = document.createElement('style');
-hyperspaceStyle.textContent = `
-    @keyframes hyperspace {
-        0% { transform: scale(1); filter: blur(0px); }
-        50% { transform: scale(1.1); filter: blur(2px); }
-        100% { transform: scale(1); filter: blur(0px); }
-    }
-`;
-document.head.appendChild(hyperspaceStyle);

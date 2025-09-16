@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Voyager - Space Satellite Research Hackathon</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .iframe-container {
+            width: 100%;
+            height: calc(100vh - 120px);
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,.6);
+            margin-top: 20px;
+        }
+        
+        .lunar-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+        
+        .page-header {
+            padding: 40px 0 20px 0;
+        }
+        
+        .loading-message {
+            text-align: center;
+            color: #99a3b2;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="floating-objects">
+        <div class="asteroid asteroid-1">🪨</div>
+        <div class="asteroid asteroid-2">☄️</div>
+        <div class="asteroid asteroid-3">🌑</div>
+        <div class="space-debris debris-1">🛸</div>
+        <div class="space-debris debris-2">🚀</div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="satellite-icon">🛰️</span>
+                <span>Team Mama</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="satellites.html">Satellites</a></li>
+                <li><a href="lab.html">Lab</a></li>
+                <li><a href="observations.html">Observations</a></li>
+                <li><a href="playground.html" class="active">Playground</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Playground Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">🚀 Lunar Voyager</h1>
+            <p class="page-subtitle">Interactive lunar exploration simulation</p>
+        </div>
+    </section>
+
+    <!-- Iframe Container -->
+    <section class="container">
+        <div class="iframe-container">
+            <iframe 
+                src="https://lunarvoyer-3.onrender.com/" 
+                class="lunar-iframe"
+                title="Lunar Voyager Simulation"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="loading-message">
+            Loading Lunar Voyager simulation...
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+</body>
+</html>
